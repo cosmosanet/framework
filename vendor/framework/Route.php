@@ -2,10 +2,12 @@
 namespace Framework;
 class Route {
     private static array $route = [];
-    public static function make(string $reqest, string $controllerName, string $functionName) : void {
+    public static function make(string $reqest, string $controllerName, string $functionName) : void 
+    {
         self::$route[$reqest] = [$controllerName, $functionName];
     }
-    private static function get($key) : ?array {
+    private static function get($key): ?array 
+    {
         if (array_key_exists($key, self::$route)) {
             return self::$route[(string)$key];
         } else {
@@ -14,7 +16,8 @@ class Route {
             //Нужно сделать редирект на страницу с ошибками
         }
     }
-    public static function start() : void {
+    public static function start(): void 
+    {
         $url = $_SERVER['REQUEST_URI'];
         $mainurl = strtok($url, '?');
         $mvc = self::get($mainurl);

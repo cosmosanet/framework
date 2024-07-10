@@ -2,17 +2,20 @@
 
 namespace Framework\Database;
 
+use mysqli;
+
 class Model {
     protected string $table;
     protected array $fillable;
     protected string $conditions;
-    public function table(string $name) : Model {
+    public function table(string $name): Model 
+    {
         $this->table = $name;
         return $this;
     }
-    public function where(string $operator1, string $value, string $operator2) : Model {
-       
-        $sql = 'WHERE ' . strval($operator1) . ' ' . $value . ' ' . strval($operator2) . ' ';
+    public function where(string $firstOperator, string $value, string $secondOperator): Model 
+    {
+        $sql = 'WHERE ' . strval($firstOperator) . ' ' . $value . ' ' . strval($secondOperator) . ' ';
         if(empty($this->conditions)) {
             $this->conditions = $sql;
         } else {
@@ -20,17 +23,19 @@ class Model {
         }
         return $this;
     }
-    public function orWhere($operator1, string $value, $operator2) : Model {
-        $sql =  'OR ' . strval($operator1) . ' ' . $value . ' ' . strval($operator2) . ' ';
+    public function orWhere($firstOperator, string $value, $secondOperator): Model 
+    {
+        $sql =  'OR ' . strval($firstOperator) . ' ' . $value . ' ' . strval($secondOperator) . ' ';
         $this->conditions = $this->conditions . $sql;
         return $this;
     }
-    public function andWhere($operator1, string $value, $operator2) : Model {
-        $sql = 'AND ' . strval($operator1) . ' ' . $value . ' ' . strval($operator2) . ' ';
+    public function andWhere($firstOperator, string $value, $secondOperator): Model 
+    {
+        $sql = 'AND ' . strval($firstOperator) . ' ' . $value . ' ' . strval($secondOperator) . ' ';
         $this->conditions = $this->conditions . $sql;
         return $this;
     }
-    public function join(string $table) : Model
+    public function join(string $table): Model
     {
         $sql = ' JOIN ' . $table;
         if(empty($this->conditions)) {
@@ -40,13 +45,14 @@ class Model {
         }
         return $this;
     }
-    public function on(string $operator1, string $value, string $operator2) : Model
+    public function on(string $firstOperator, string $value, string $secondOperator): Model
     {
-        $sql = ' ON ' . $operator1 . ' ' . $value . ' ' . $operator2;
+        $sql = ' ON ' . $firstOperator . ' ' . $value . ' ' . $secondOperator;
         $this->conditions = $this->conditions . $sql;
         return $this;
     }
-    public function insert(array $arr) : void {
+    public function insert(array $arr): void 
+    {
         foreach ($arr as $key => $value) {
             if (is_null($value)){ $arr[$key] = "NULL";
             } else {
@@ -60,14 +66,16 @@ class Model {
         $conn->query($sql);
         mysqli_close($conn);
     }
-    public function delete() : void {
+    public function delete(): void 
+    {
         $sql = 'DELETE';
         $sql = $sql . ' FROM ' . $this->table;
         if(!empty($this->conditions)) {
             $sql = $sql . ' ' . $this->conditions;
         }
     }
-    public function get(?array $arr = NULL) : array  {
+    public function get(?array $arr = NULL): array  
+    {
         $sql = 'SELECT';
         if (empty($arr)) {
             $sql = $sql . ' * ' ;
@@ -89,11 +97,13 @@ class Model {
         mysqli_close($conn);
         return $rows;
     }
-    private function sqlConnect () {
-        $conn = mysqli_connect(DB_LOCATION, DB_USER, DB_PASSWORD, DB_NAME);
+    private function sqlConnect(): mysqli 
+    {
+        $conn = new mysqli(DB_LOCATION, DB_USER, DB_PASSWORD, DB_NAME);
         return $conn;
     }
-    public function count() : int {
+    public function count(): int 
+    { 
         $sql = 'SELECT COUNT(*) ';
         $sql = $sql . ' FROM ' . $this->table;
         if(!empty($this->conditions)) {
@@ -101,10 +111,11 @@ class Model {
         }
         $conn = $this->sqlConnect();
         $result = $conn->query($sql);
-        
+        mysqli_close($conn);
         return (int)mysqli_fetch_array($result)['COUNT(*)'];
     }
-    public function toSql(?array $arr = NULL) : string {
+    public function toSql(?array $arr = NULL): string 
+    {
         $sql = 'SELECT';
         if (empty($arr)) {
             $sql = $sql . ' * ' ;
