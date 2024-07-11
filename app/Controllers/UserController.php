@@ -8,7 +8,7 @@ class UserController extends Controller
 {
     public function index(): void 
     {
-        if(array_key_exists('id', $_GET)) {
+        if (array_key_exists('id', $_GET)) {
             $get = $_GET['id'];
         } else {
             $get = null;

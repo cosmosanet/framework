@@ -2,7 +2,7 @@
 namespace Framework;
 class Route {
     private static array $route = [];
-    public static function make(string $reqest, string $controllerName, string $functionName) : void 
+    public static function make(string $reqest, string $controllerName, string $functionName): void 
     {
         self::$route[$reqest] = [$controllerName, $functionName];
     }
@@ -22,13 +22,13 @@ class Route {
         $mainurl = strtok($url, '?');
         $mvc = self::get($mainurl);
         $class = $mvc[0];
-        if(class_exists($class)) {
-            $metod = $mvc[1];
-            if(method_exists($class, $metod)) {
+        if (class_exists($class)) {
+            $method = $mvc[1];
+            if (method_exists($class, $method)) {
                 $asd = new $class;
-                $asd->$metod();
+                $asd->$method();
             } else {
-                echo "Metod " . $metod . " does not exist";
+                echo "Method " . $method . " does not exist";
                 //Нужно сделать редирект на страницу с ошибками
             }
         } else {
