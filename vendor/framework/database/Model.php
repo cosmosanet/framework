@@ -23,13 +23,13 @@ class Model {
         }
         return $this;
     }
-    public function orWhere($firstOperator, string $value, $secondOperator): Model 
+    public function orWhere(string $firstOperator, string $value, string $secondOperator): Model 
     {
         $sql =  'OR ' . strval($firstOperator) . ' ' . $value . ' ' . strval($secondOperator) . ' ';
         $this->conditions = $this->conditions . $sql;
         return $this;
     }
-    public function andWhere($firstOperator, string $value, $secondOperator): Model 
+    public function andWhere(string $firstOperator, string $value, string $secondOperator): Model 
     {
         $sql = 'AND ' . strval($firstOperator) . ' ' . $value . ' ' . strval($secondOperator) . ' ';
         $this->conditions = $this->conditions . $sql;
@@ -61,7 +61,7 @@ class Model {
         }
         $keys =  implode(', ',array_keys($arr));
         $values = implode(', ',array_values($arr));
-        $sql = "INSERT INTO " . $this->table ." ( ". $keys . ") VALUES " . "(" . $values . ");";
+        $sql = "INSERT INTO " . $this->table . " ( " . $keys . ") VALUES " . "(" . $values . ");";
         $conn = $this->sqlConnect();
         $conn->query($sql);
         mysqli_close($conn);
@@ -74,7 +74,7 @@ class Model {
             $sql = $sql . ' ' . $this->conditions;
         }
     }
-    public function get(?array $arr = NULL): array  
+    public function get(?array $arr = null): array  
     {
         $sql = 'SELECT';
         if (empty($arr)) {
@@ -114,7 +114,7 @@ class Model {
         mysqli_close($conn);
         return (int)mysqli_fetch_array($result)['COUNT(*)'];
     }
-    public function toSql(?array $arr = NULL): string 
+    public function toSql(?array $arr = null): string 
     {
         $sql = 'SELECT';
         if (empty($arr)) {

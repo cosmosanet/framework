@@ -1,12 +1,9 @@
 <?php
+
 namespace App\Controllers;
 
 class Controller
 {
-    // private $content;
-    // public function __call($method, $args) {
-    //     $this->$method($args);
-    // }
     public function view(string $name, ?array $arg = null): Controller 
     {
        include_once $_SERVER['DOCUMENT_ROOT'] . '/resources/view/' . $name . '.php';
@@ -15,13 +12,13 @@ class Controller
        return $this;
     }
 
-    public function redirect($url): Controller 
+    public function redirect(string $url): Controller 
     {
-        header('Location: '.$url);
+        header('Location: ' . $url);
         return $this;
     }
 
-    public function with(array $arg): void
+    public function session(array $arg): void
     {
         session_start();
         $_SESSION = $arg;
