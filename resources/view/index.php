@@ -5,6 +5,7 @@ if(isset($arg)) {
 } 
 session_start();
 var_dump($_SESSION);
+
 ?>
 
 <h1>Главная страница</h1>
