@@ -5,5 +5,5 @@ use Framework\Database\Model;
 
 class Migration extends Model
 {
-    
+
 }

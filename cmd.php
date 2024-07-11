@@ -9,4 +9,4 @@ switch ($_SERVER['argv'][1]) {
     default:
         echo 'Command not found';
         break;
-    }
+}
