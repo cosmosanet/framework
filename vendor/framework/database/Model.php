@@ -2,13 +2,13 @@
 
 namespace Framework\Database;
 
-use mysqli;
-
-class Model
+use Framework\Database\DB;
+class Model extends DB
 {
     protected string $table;
     protected array $fillable;
     protected string $conditions;
+
     public function table(string $name): Model
     {
         $this->table = $name;
@@ -97,11 +97,6 @@ class Model
         }
         mysqli_close($conn);
         return $rows;
-    }
-    private function sqlConnect(): mysqli
-    {
-        $conn = new mysqli(DB_LOCATION, DB_USER, DB_PASSWORD, DB_NAME);
-        return $conn;
     }
     public function count(): int
     {

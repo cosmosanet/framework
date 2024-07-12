@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use ReflectionFunction;
+
 class Controller
 {
     public function view(string $name, ?array $arg = null): Controller
@@ -11,13 +13,11 @@ class Controller
         include_once 'resources/view/layout/head.php';
         return $this;
     }
-
     public function redirect(string $url): Controller
     {
         header('Location: ' . $url);
         return $this;
     }
-
     public function session(array $arg): void
     {
         session_start();

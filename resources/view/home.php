@@ -20,3 +20,8 @@ var_dump($_SESSION);
     <input type="text" name="id" value="322">
     <input type="submit" value="OK">
 </form>
+
+<form action="/post" method="post">
+    <input type="text" name="id" value="322">
+    <input type="submit" value="OK">
+</form>

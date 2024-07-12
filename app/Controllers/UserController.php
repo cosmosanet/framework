@@ -8,6 +8,7 @@ class UserController extends Controller
 {
     public function index(): void
     {
+        var_dump(func_get_args());
         if (array_key_exists('id', $_GET)) {
             $get = $_GET['id'];
         } else {
@@ -17,8 +18,15 @@ class UserController extends Controller
     }
     public function home(): void
     {
+        var_dump($_POST);
         $db = new Model();
         $request = $db->table('user')->get();
-        self::view('home', ['user' => $request[0]['name'], 'request' => $request])->session(['session' => 'session']);
+        self::view('home', ['user' => $request[0]['name'], 'request' => $request]);
+    }
+
+    public function post() 
+    {
+        var_dump($_POST);
+        self::redirect('/home')->session(['asd' => $_POST['id']]);
     }
 }
