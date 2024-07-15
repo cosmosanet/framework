@@ -14,7 +14,7 @@ class Request
         $this->methodName = $methodName;
         $this->httpMethod = $httpMethod;
     }
-    public function getReqest(): array
+    public function getProperties(): array
     {
 
         if (isset($this->urlParam)) {

@@ -1,6 +1,7 @@
 <?php
 namespace Framework;
 
+use Exception;
 use Framework\Request;
 
 class Route
@@ -10,10 +11,7 @@ class Route
     {
         $reqest = new Request($controllerName, $functionName, 'GET', $reqestUrl);
         $regex = self::getRegexForUrl($reqestUrl);
-        $param = self::getUrlNameParamIfExist($reqestUrl);
-        if ($param !== null) {
-            $reqest->setUrlNamaesParams(self::getUrlNameParamIfExist($reqestUrl));
-        }
+        $reqest->setUrlNamaesParams(self::getUrlNameParamIfExist($reqestUrl));
         $reqest->setRegex($regex);
         self::$route[$regex] = $reqest;
     }
@@ -30,7 +28,7 @@ class Route
             preg_match_all('/\{([^}]*)\}/', $url, $array);
             return $array[1];
         } else
-            return null;
+            return $array = [];
     }
     private static function getRegexForUrl(string $url): string
     {
@@ -40,8 +38,9 @@ class Route
             $regex = str_replace($param, '(.*?)', $regex);
         }
         $regex = str_replace('/', '\/', $regex);
-        //@todo Сделать возможность добавлять url без / в конце
-        return '/' . $regex . '/';
+        $regex = $regex . '\/$';
+        $regex = str_replace('\/\/', '\/', $regex);
+        return '/^' . $regex . '/mi';
     }
     private static function getParam(string $class, string $method, string $regex, ?array $urlParam): array
     {
@@ -64,16 +63,21 @@ class Route
     }
     private static function getMainUrl(string $serverUrl): string
     {
-        return parse_url($serverUrl)['path'];
+        $url = parse_url($serverUrl)['path'];
+        $url = $url . '/';
+        $url = str_replace('//', '/', $url);
+        return $url;
     }
-    private static function getMvcIfExist(string $url): ?Request
+    private static function getRequestIfExist(string $url): ?Request
     {
         foreach (self::$route as $key => $value) {
             if (preg_match($key, $url)) {
                 preg_match($key, $url, $array);
                 return $value;
+                //@todo preg_match разобраться почему не правельно принимает regex
             }
         }
+        return null;
     }
     private static function getValueUrlParam($url, $regex): array
     {
@@ -81,41 +85,59 @@ class Route
         array_shift($arr);
         return $arr;
     }
+    private static function checkHttpMethod(): bool
+    {
+        $reqest = self::getRequestIfExist(self::getMainUrl($_SERVER['REQUEST_URI']));
+        $httpServerMethod = $_SERVER['REQUEST_METHOD'];
+        $http = $reqest->getProperties()['httpMethod'];
+        if($httpServerMethod === $http) {
+            return true;
+        } else {
+            http_response_code(405);
+            throw new Exception('The route does not support the ' . $httpServerMethod . ' method');
+        }
+    }
+    private static function checkMetodExist(string $class, string $method): bool
+    {
+        if (class_exists($class)) {
+            if (method_exists($class, $method)) {
+                return true;
+            } else {
+                http_response_code(404);
+                throw new Exception('Method ' . $method .  ' not found');
+            }
+        } else {
+            http_response_code(404);
+            throw new Exception('Class ' . $class . ' not found');
+        }
+    }
+    public static function callMethod(string $class, string $method, string $regex, array $urlParam): void
+    {
+        $paramArray = self::getParam($class, $method, $regex, $urlParam);
+        $callMethod = new $class;
+        $callMethod->$method(...$paramArray);
+    }
     public static function start(): void
     {
-        // var_dump(self::$route);
-        $httpServerMethod = $_SERVER['REQUEST_METHOD'];
+        echo $_SERVER['REQUEST_URI'];
         $mainurl = self::getMainUrl($_SERVER['REQUEST_URI']);
-        $mvc = self::getMvcIfExist($mainurl);
-        if ($mvc === null) {
-            http_response_code(404);
-        } else {
-            $reqest = $mvc->getReqest();
+        $request = self::getRequestIfExist($mainurl);
+        if ($request !== null) {
+            self::checkHttpMethod();
+            $reqest = $request->getProperties();
             $class = $reqest['controllerName'];
             $method = $reqest['methodName'];
-            $http = $reqest['httpMethod'];
             $regex = $reqest['regexForUrl'];
-            if ($httpServerMethod === $http) {
-                if (class_exists($class)) {
-                    if (method_exists($class, $method)) {
-                        $mvc->setValueUrlParam(self::getValueUrlParam($mainurl, $regex));
-                        if (isset($reqest['urlParam'])) {
-                            $urlParam = $mvc->getReqest()['urlParam'];
-                        }
-                        $paramArray = self::getParam($class, $method, $regex, $urlParam);
-                        $callMethod = new $class;
-                        $callMethod->$method(...$paramArray);
-                    } else {
-                        echo "Method " . $method . " does not exist";
-                        //@toDo Нужно сделать редирект на страницу с ошибками
-                    }
-                } else {
-                    echo "Class " . $class . "does not exist";
-                    //@toDo Нужно сделать редирект на страницу с ошибками
-                }
-            } else {
-                http_response_code(405);
+            self::checkMetodExist($class, $method);
+            $request->setValueUrlParam(self::getValueUrlParam($mainurl, $regex));
+            if (isset($reqest['urlParam'])) {
+                $urlParam = $request->getProperties()['urlParam'];
             }
+            self::callMethod($class, $method, $regex, $urlParam);
+        }
+        if ($request === null) {
+            http_response_code(404);
+            throw new Exception('Route ' . $mainurl . ' not found');
         }
     }
 }
