@@ -7,17 +7,16 @@ use Framework\Request;
 
 class UserController extends Controller
 {
-    public function home(Request $request, int $number1, string $number2, $op = ' = '): void
+    public function home(Request $request, int $number1, string $number2, $operator): void
     {
-        echo $number1 . '+' . $number2 . $op .  $number1 + $number2;
+        echo $number1 . ' + ' . $number2 . $operator .  $number1 + $number2;
         $db = new Model();
         $request = $db->table('user')->get();
         self::view('home', ['user' => $request[0]['name'], 'request' => $request]);
     }
 
-    public function post(Request $request, $id) 
+    public function post(Request $request) 
     {
-        var_dump($id);
-        var_dump($request->post('id'));
+        echo 'POST';
     }
 }

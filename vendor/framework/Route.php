@@ -72,9 +72,7 @@ class Route
         {
             preg_match($key, $url, $array);
             return $value;
-        } else {
-            return null;
-        }
+        } 
         }
     }
     private static function getValueUrlParam($url, $regex): array
@@ -85,6 +83,7 @@ class Route
     }
     public static function start(): void
     {
+        // var_dump(self::$route);
         $httpServerMethod = $_SERVER['REQUEST_METHOD'];
         $mainurl = self::getMainUrl($_SERVER['REQUEST_URI']);
         $mvc = self::getMvcIfExist($mainurl);
