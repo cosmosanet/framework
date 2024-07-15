@@ -29,13 +29,14 @@ class Route
         if (preg_match('/\{([^}]*)\}/', $url)) {
             preg_match_all('/\{([^}]*)\}/', $url, $array);
             return $array[1];
-        } else return null;
+        } else
+            return null;
     }
     private static function getRegexForUrl(string $url): string
     {
         preg_match_all('/\{([^}]*)\}/', $url, $array);
         $regex = $url;
-        foreach($array[0] as $param) {
+        foreach ($array[0] as $param) {
             $regex = str_replace($param, '(.*?)', $regex);
         }
         $regex = str_replace('/', '\/', $regex);
@@ -48,13 +49,13 @@ class Route
         $searchMethod = new \ReflectionMethod($class, $method);
         foreach ($searchMethod->getParameters() as $item) {
             $name = $item->getName();
-            if((string)$item->getType() === 'Framework\Request'){
+            if ((string) $item->getType() === 'Framework\Request') {
                 $paramArray[$name] = self::$route[$regex];
             } else if (isset($urlParam)) {
                 if (array_key_exists($name, $urlParam)) {
-                   
+
                     $paramArray[$name] = $urlParam[$name];
-                } 
+                }
             } else {
                 $item->isDefaultValueAvailable() ? $paramArray[$name] = $item->getDefaultValue() : $paramArray[$name] = null;
             }
@@ -68,11 +69,10 @@ class Route
     private static function getMvcIfExist(string $url): ?Request
     {
         foreach (self::$route as $key => $value) {
-        if(preg_match($key, $url))
-        {
-            preg_match($key, $url, $array);
-            return $value;
-        } 
+            if (preg_match($key, $url)) {
+                preg_match($key, $url, $array);
+                return $value;
+            }
         }
     }
     private static function getValueUrlParam($url, $regex): array
@@ -87,7 +87,7 @@ class Route
         $httpServerMethod = $_SERVER['REQUEST_METHOD'];
         $mainurl = self::getMainUrl($_SERVER['REQUEST_URI']);
         $mvc = self::getMvcIfExist($mainurl);
-        if($mvc === null) {
+        if ($mvc === null) {
             http_response_code(404);
         } else {
             $reqest = $mvc->getReqest();
