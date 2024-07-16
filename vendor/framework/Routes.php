@@ -3,9 +3,8 @@ namespace Framework;
 
 use Exception;
 use Framework\Request;
-use Framework\RoutingInterface;
 
-class Route implements RoutingInterface
+class Routes
 {
     private static array $route = [];
     public static function get(string $reqestUrl, string $controllerName, string $functionName): void
@@ -23,7 +22,7 @@ class Route implements RoutingInterface
         $reqest->setRegex($regex);
         self::$route[$regex] = $reqest;
     }
-    private static function getUrlNameParamIfExist($url): ?array
+    private static function getUrlNameParamIfExist(string $url): ?array
     {
         if (preg_match('/\{([^}]*)\}/', $url)) {
             preg_match_all('/\{([^}]*)\}/', $url, $array);

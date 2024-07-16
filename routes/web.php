@@ -8,9 +8,7 @@
 // Route::get('/addition/{number1}/plus/{number2}/', App\Controllers\UserController::class, 'home');
 // Route::start();
 
-use Framework\Route;
-use Framework\RoutingFacade;
+use Framework\Facade\Route;
 
-RoutingFacade::construct(new Route());
-RoutingFacade::get('/addition/{number1}/plus/{number2}/', App\Controllers\UserController::class, 'home');
-RoutingFacade::start();
+Route::get('/addition/{number1}/plus/{number2}/', App\Controllers\UserController::class, 'home');
+Route::start();
