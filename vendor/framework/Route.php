@@ -3,8 +3,9 @@ namespace Framework;
 
 use Exception;
 use Framework\Request;
+use Framework\RoutingInterface;
 
-class Route
+class Route implements RoutingInterface
 {
     private static array $route = [];
     public static function get(string $reqestUrl, string $controllerName, string $functionName): void
@@ -35,12 +36,18 @@ class Route
         preg_match_all('/\{([^}]*)\}/', $url, $array);
         $regex = $url;
         foreach ($array[0] as $param) {
-            $regex = str_replace($param, '(.*?)', $regex);
+            if(is_string($param)) {
+                $regex = str_replace($param, '(\w+)', $regex);
+            }
+            if(is_int($param))
+            {
+                $regex = str_replace($param, '(\d+)', $regex);
+            }
         }
         $regex = str_replace('/', '\/', $regex);
-        $regex = $regex . '\/$';
+        $regex = $regex . '\/+$';
         $regex = str_replace('\/\/', '\/', $regex);
-        return '/^' . $regex . '/mi';
+        return '/^' . $regex . '/';
     }
     private static function getParam(string $class, string $method, string $regex, ?array $urlParam): array
     {
@@ -66,15 +73,14 @@ class Route
         $url = parse_url($serverUrl)['path'];
         $url = $url . '/';
         $url = str_replace('//', '/', $url);
-        return $url;
+        return (string)$url;
     }
     private static function getRequestIfExist(string $url): ?Request
     {
+        
         foreach (self::$route as $key => $value) {
             if (preg_match($key, $url)) {
-                preg_match($key, $url, $array);
                 return $value;
-                //@todo preg_match разобраться почему не правельно принимает regex
             }
         }
         return null;
@@ -111,7 +117,7 @@ class Route
             throw new Exception('Class ' . $class . ' not found');
         }
     }
-    public static function callMethod(string $class, string $method, string $regex, array $urlParam): void
+    private static function callMethod(string $class, string $method, string $regex, array $urlParam): void
     {
         $paramArray = self::getParam($class, $method, $regex, $urlParam);
         $callMethod = new $class;
@@ -119,7 +125,6 @@ class Route
     }
     public static function start(): void
     {
-        echo $_SERVER['REQUEST_URI'];
         $mainurl = self::getMainUrl($_SERVER['REQUEST_URI']);
         $request = self::getRequestIfExist($mainurl);
         if ($request !== null) {

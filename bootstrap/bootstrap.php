@@ -1,5 +1,6 @@
 <?php
-
+include_once 'vendor\framework\RoutingInterface.php';
+include_once 'vendor/framework/RouteFacade.php';
 include_once 'vendor/framework/database/DB.php';
 include_once 'app/Controllers/Controller.php';
 include_once 'app/Controllers/UserController.php';

@@ -1,6 +1,8 @@
 <?php
 namespace Framework;
 
+use RoutingInterface;
+
 class Request
 {
     private string $controllerName;
