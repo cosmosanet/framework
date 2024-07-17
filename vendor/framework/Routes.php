@@ -6,31 +6,42 @@ use Framework\Request;
 
 class Routes
 {
-    private static array $route = [];
-    public static function get(string $reqestUrl, string $controllerName, string $functionName): void
+    private array $route = [];
+    private Request $reqest;
+
+    public function get(string $reqestUrl, string $controllerName, string $functionName): void
     {
         $reqest = new Request($controllerName, $functionName, 'GET', $reqestUrl);
-        $regex = self::getRegexForUrl($reqestUrl);
-        $reqest->setUrlNamaesParams(self::getUrlNameParamIfExist($reqestUrl));
+        $regex = $this->getRegexForUrl($reqestUrl);
+        $reqest->setUrlNamaesParams($this->getUrlNameParamIfExist($reqestUrl));
         $reqest->setRegex($regex);
-        self::$route[$regex] = $reqest;
+        $this->route[$regex] = $reqest;
+        if ($this->start()) {
+            exit;
+        }
     }
-    public static function post(string $reqestUrl, string $controllerName, string $functionName): void
+    public function post(string $reqestUrl, string $controllerName, string $functionName): void
     {
         $reqest = new Request($controllerName, $functionName, 'POST', $reqestUrl);
-        $regex = self::getRegexForUrl($reqestUrl);
+        $regex = $this->getRegexForUrl($reqestUrl);
+        $reqest->setUrlNamaesParams($this->getUrlNameParamIfExist($reqestUrl));
         $reqest->setRegex($regex);
-        self::$route[$regex] = $reqest;
+        $this->route[$regex] = $reqest;
+        if ($this->start()) {
+            exit;
+        } 
     }
-    private static function getUrlNameParamIfExist(string $url): ?array
+    private function getUrlNameParamIfExist(string $url): ?array
     {
         if (preg_match('/\{([^}]*)\}/', $url)) {
             preg_match_all('/\{([^}]*)\}/', $url, $array);
             return $array[1];
-        } else
+        } 
+        if (!preg_match('/\{([^}]*)\}/', $url)) {
             return $array = [];
+        }
     }
-    private static function getRegexForUrl(string $url): string
+    private function getRegexForUrl(string $url): string
     {
         preg_match_all('/\{([^}]*)\}/', $url, $array);
         $regex = $url;
@@ -48,14 +59,14 @@ class Routes
         $regex = str_replace('\/\/', '\/', $regex);
         return '/^' . $regex . '/';
     }
-    private static function getParam(string $class, string $method, string $regex, ?array $urlParam): array
+    private function getParam(string $class, string $method, string $regex, ?array $urlParam): array
     {
         $paramArray = [];
         $searchMethod = new \ReflectionMethod($class, $method);
         foreach ($searchMethod->getParameters() as $item) {
             $name = $item->getName();
             if ((string) $item->getType() === 'Framework\Request') {
-                $paramArray[$name] = self::$route[$regex];
+                $paramArray[$name] = $this->route[$regex];
             } else if (isset($urlParam)) {
                 if (array_key_exists($name, $urlParam)) {
 
@@ -67,81 +78,116 @@ class Routes
         }
         return $paramArray;
     }
-    private static function getMainUrl(string $serverUrl): string
+    private function getMainUrl(string $serverUrl): string
     {
         $url = parse_url($serverUrl)['path'];
         $url = $url . '/';
         $url = str_replace('//', '/', $url);
         return (string)$url;
     }
-    private static function getRequestIfExist(string $url): ?Request
+    private function getRequestIfExist(string $url): ?Request
     {
-        
-        foreach (self::$route as $key => $value) {
+        foreach ($this->route as $key => $value) {
             if (preg_match($key, $url)) {
                 return $value;
             }
         }
         return null;
     }
-    private static function getValueUrlParam($url, $regex): array
+    private function getValueUrlParam($url, $regex): array
     {
         preg_match($regex, $url, $arr);
         array_shift($arr);
         return $arr;
     }
-    private static function checkHttpMethod(): bool
+    private function checkHttpMethod(): bool
     {
-        $reqest = self::getRequestIfExist(self::getMainUrl($_SERVER['REQUEST_URI']));
+        $reqest = $this->getRequestIfExist($this->getMainUrl($_SERVER['REQUEST_URI']));
         $httpServerMethod = $_SERVER['REQUEST_METHOD'];
         $http = $reqest->getProperties()['httpMethod'];
-        if($httpServerMethod === $http) {
+        if ($httpServerMethod === $http) {
             return true;
-        } else {
+        } 
+        if ($httpServerMethod !== $http)  {
             http_response_code(405);
             throw new Exception('The route does not support the ' . $httpServerMethod . ' method');
         }
     }
-    private static function checkMetodExist(string $class, string $method): bool
+    private function checkMetodExist(string $class, string $method): bool
     {
         if (class_exists($class)) {
             if (method_exists($class, $method)) {
                 return true;
-            } else {
+            } 
+            if (!method_exists($class, $method)) {
                 http_response_code(404);
                 throw new Exception('Method ' . $method .  ' not found');
             }
-        } else {
+        } 
+        if (!class_exists($class)) {
             http_response_code(404);
             throw new Exception('Class ' . $class . ' not found');
         }
     }
-    private static function callMethod(string $class, string $method, string $regex, array $urlParam): void
+    private function callMethod(string $class, string $method, string $regex, array $urlParam): void
     {
-        $paramArray = self::getParam($class, $method, $regex, $urlParam);
+        $paramArray = $this->getParam($class, $method, $regex, $urlParam);
         $callMethod = new $class;
         $callMethod->$method(...$paramArray);
     }
-    public static function start(): void
+    private function start(): bool
     {
-        $mainurl = self::getMainUrl($_SERVER['REQUEST_URI']);
-        $request = self::getRequestIfExist($mainurl);
+        $mainurl = $this->getMainUrl($_SERVER['REQUEST_URI']);
+        $request = $this->getRequestIfExist($mainurl);
         if ($request !== null) {
-            self::checkHttpMethod();
+            $this->checkHttpMethod();
             $reqest = $request->getProperties();
             $class = $reqest['controllerName'];
             $method = $reqest['methodName'];
             $regex = $reqest['regexForUrl'];
-            self::checkMetodExist($class, $method);
-            $request->setValueUrlParam(self::getValueUrlParam($mainurl, $regex));
+            $this->checkMetodExist($class, $method);
+            $request->setValueUrlParam($this->getValueUrlParam($mainurl, $regex));
             if (isset($reqest['urlParam'])) {
                 $urlParam = $request->getProperties()['urlParam'];
             }
-            self::callMethod($class, $method, $regex, $urlParam);
+            $this->callMethod($class, $method, $regex, $urlParam);
+            return true;
         }
-        if ($request === null) {
-            http_response_code(404);
-            throw new Exception('Route ' . $mainurl . ' not found');
-        }
+            return false;
     }
 }
+
+
+// class Route
+// {
+//     private Request $request;
+//     public function get(): Route
+//     {
+//         $this->request = new Request();
+//         return $this;
+//     }
+
+//     public function middleware($middlewares): Route
+//     {
+//         foreach ($middlewares as $middleware)
+//         {
+//             // что то делает с $this->$request
+//         }
+//         return $this;
+//     }
+
+//     public function name($nameMethod): void
+//     {
+//         if($this->start()) {
+//             exit;
+//         }
+//     }
+
+//     public function start($nameMethod): bool
+//     {
+//         //выполнение роута
+//     }
+// }
+
+// //ИТОГ
+// Route::get()->middleware($middlewares)->name($nameMethod);

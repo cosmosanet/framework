@@ -12,11 +12,16 @@ class UserController extends Controller
         echo $number1 . ' + ' . $number2 . ' = ' .  $number1 + $number2;
         $db = new Model();
         $request = $db->table('user')->get();
-        self::view('home', ['user' => $request[0]['name'], 'request' => $request]);
+        $this->view('home', ['user' => $request[0]['name'], 'request' => $request]);
     }
 
-    public function post(Request $request) 
+    public function index(Request $request) 
     {
-        echo 'POST';
+        self::view('index');
+    }
+
+    public function post($id)
+    {
+        echo $id;
     }
 }
