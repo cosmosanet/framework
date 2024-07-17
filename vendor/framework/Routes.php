@@ -2,34 +2,63 @@
 namespace Framework;
 
 use Exception;
+use Framework\Facade\Route;
 use Framework\Request;
 
 class Routes
 {
     private array $route = [];
+    //@todo переделать под 2 переменные
     private Request $reqest;
 
-    public function get(string $reqestUrl, string $controllerName, string $functionName): void
+    public function get(string $reqestUrl, string $controllerName): Routes
     {
-        $reqest = new Request($controllerName, $functionName, 'GET', $reqestUrl);
+        $this->reqest = new Request($controllerName, 'GET', $reqestUrl);
         $regex = $this->getRegexForUrl($reqestUrl);
-        $reqest->setUrlNamaesParams($this->getUrlNameParamIfExist($reqestUrl));
-        $reqest->setRegex($regex);
-        $this->route[$regex] = $reqest;
-        if ($this->start()) {
+        $this->reqest->setUrlNamaesParams($this->getUrlNameParamIfExist($reqestUrl));
+        $this->reqest->setRegex($regex);
+        $this->route[$regex] = $this->reqest;
+        return $this;
+    }
+    public function post(string $reqestUrl, string $controllerName): Routes
+    {
+        $this->reqest = new Request($controllerName, 'POST', $reqestUrl);
+        $regex = $this->getRegexForUrl($reqestUrl);
+        $this->reqest->setUrlNamaesParams($this->getUrlNameParamIfExist($reqestUrl));
+        $this->reqest->setRegex($regex);
+        $this->route[$regex] = $this->reqest;
+        return $this;
+    }
+    public function name(string $nameMethod): void
+    {
+        if($this->checkRequest())
+        {
+            $this->reqest->setMethodName($nameMethod);
+            $this->start();
             exit;
         }
     }
-    public function post(string $reqestUrl, string $controllerName, string $functionName): void
+    public function middleware(mixed $middlewares): Routes
     {
-        $reqest = new Request($controllerName, $functionName, 'POST', $reqestUrl);
-        $regex = $this->getRegexForUrl($reqestUrl);
-        $reqest->setUrlNamaesParams($this->getUrlNameParamIfExist($reqestUrl));
-        $reqest->setRegex($regex);
-        $this->route[$regex] = $reqest;
-        if ($this->start()) {
-            exit;
-        } 
+        
+        if($this->checkRequest())
+        {
+            if(is_array($middlewares)) {
+                foreach ($middlewares as $middleware) {
+                    $class = new $middleware();
+                    foreach (get_class_methods($middleware) as $method) {
+                        $this->reqest = $class->$method($this->reqest);
+                    }
+                }
+            }
+            if (is_string($middlewares)) {
+                $class = new $middlewares();
+                foreach (get_class_methods($middlewares) as $method) {
+                    $this->reqest = $class->$method($this->reqest);
+                }
+            }
+        }
+        return $this;
     }
     private function getUrlNameParamIfExist(string $url): ?array
     {
@@ -112,6 +141,7 @@ class Routes
             http_response_code(405);
             throw new Exception('The route does not support the ' . $httpServerMethod . ' method');
         }
+        return false;
     }
     private function checkMetodExist(string $class, string $method): bool
     {
@@ -128,12 +158,23 @@ class Routes
             http_response_code(404);
             throw new Exception('Class ' . $class . ' not found');
         }
+        return false;
     }
     private function callMethod(string $class, string $method, string $regex, array $urlParam): void
     {
         $paramArray = $this->getParam($class, $method, $regex, $urlParam);
         $callMethod = new $class;
         $callMethod->$method(...$paramArray);
+    }
+    private function checkRequest(): bool
+    {
+        $url = $this->getMainUrl($_SERVER['REQUEST_URI']);
+        foreach ($this->route as $key => $value) {
+            if (preg_match($key, $url)) {
+                return true;
+            }
+        }
+        return false;
     }
     private function start(): bool
     {
@@ -156,38 +197,3 @@ class Routes
             return false;
     }
 }
-
-
-// class Route
-// {
-//     private Request $request;
-//     public function get(): Route
-//     {
-//         $this->request = new Request();
-//         return $this;
-//     }
-
-//     public function middleware($middlewares): Route
-//     {
-//         foreach ($middlewares as $middleware)
-//         {
-//             // что то делает с $this->$request
-//         }
-//         return $this;
-//     }
-
-//     public function name($nameMethod): void
-//     {
-//         if($this->start()) {
-//             exit;
-//         }
-//     }
-
-//     public function start($nameMethod): bool
-//     {
-//         //выполнение роута
-//     }
-// }
-
-// //ИТОГ
-// Route::get()->middleware($middlewares)->name($nameMethod);

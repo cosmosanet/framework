@@ -10,11 +10,14 @@ class Request
     private string $httpMethod;
     private string $regexForUrl;
     private array $urlParam = [];
-    function __construct(string $controllerName, string $methodName, string $httpMethod, string $routeUrl)
+    function __construct(string $controllerName, string $httpMethod, string $routeUrl)
     {
         $this->controllerName = $controllerName;
-        $this->methodName = $methodName;
         $this->httpMethod = $httpMethod;
+    }
+    public function getRegex(): string
+    {
+        return $this->regexForUrl;
     }
     public function getProperties(): array
     {
@@ -42,6 +45,10 @@ class Request
         foreach ($namesParam as $item) {
             array_push($this->urlParam, $item);
         }
+    }
+    public function setMethodName($name)
+    {
+        $this->methodName = $name;
     }
     public function setValueUrlParam(array $ValuesParam)
     {

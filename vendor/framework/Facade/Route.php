@@ -5,8 +5,9 @@ use Exception;
 use Framework\Routes;
 
 /**
- * @method static void get(string $reqestUrl, string $controllerName, string $functionName)
- * @method static void post(string $reqestUrl, string $controllerName, string $functionName)
+ * @method static Routes get(string $reqestUrl, string $controllerName)
+ * @method static Routes post(string $reqestUrl, string $controllerName)
+ * @method void name(string $nameMethod)
  * 
  * @see Framework\Route
  */
