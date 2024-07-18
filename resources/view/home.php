@@ -1,11 +1,16 @@
 <?php
 
-// extract($arg, EXTR_SKIP);
+echo  'Статус авторизации: ';
+if (isset($_SESSION['Auth'])) {
+    echo $_SESSION['Auth'];
+} else echo '0';
 
 ?>
 <!-- <h1>Пользователь <?php echo isset($user) ? $user : null ?> </h1> -->
 <p>Записи из бд:</p>
 <?php
+var_dump($arg);
+
 
 
 session_start();

@@ -7,6 +7,6 @@ use Framework\Database\Model;
 class TestModel extends Model
 {
     protected string $table = 'user';
-    protected array $fillable = ['id', 'name'];
+    protected $fillable = ['id', 'name'];
 
 }

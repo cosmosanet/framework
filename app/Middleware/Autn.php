@@ -11,8 +11,10 @@ class Auth
         if(isset($_SESSION['Auth']))
         {
             return $request;
-        } else {
+        }
+         else {
             header('Location: http://localhost/');
+            // http_response_code()
             return null;
         }
     }

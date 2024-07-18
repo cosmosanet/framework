@@ -11,8 +11,9 @@ class UserController extends Controller
     {
         echo $number1 . ' + ' . $number2 . ' = ' .  $number1 + $number2;
         $db = new Model();
-        $request = $db->table('user')->get();
-        $this->view('home');
+        $request = $db->table('user')->join('qwe')->on('user.id', '=', 'qwe.id')->get();
+        // $db->table('user')->insert(['id' => null, 'name' => 'Alex']);
+        $this->view('home', ['allusers' => $request]);
     }
 
     public function index(Request $request) 
@@ -27,12 +28,10 @@ class UserController extends Controller
     }
     public function auth()
     {
-        session_start();
-        $_SESSION['Auth'] = 1;
-        self::redirect('/addition/1/plus/2/');
+        self::redirect('/')->session(['Auth' => 1]);
     }
 
-    public function post($id)
+    public function post(Request $request, $id)
     {
         echo $id;
     }

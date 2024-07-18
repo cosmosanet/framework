@@ -2,59 +2,55 @@
 namespace Framework;
 
 use Exception;
+use Exception\RouteException;
 use Framework\Facade\Route;
 use Framework\Request;
 
 class Routes
 {
-    private array $route = [];
-    //@todo переделать под 2 переменные
-    private Request $reqest;
+    private string $urlRegex;
+    private Request $request;
 
-    public function get(string $reqestUrl, string $controllerName): Routes
+    public function get(string $requestUrl, string $controllerName): Routes
     {
-        $this->reqest = new Request($controllerName, 'GET', $reqestUrl);
-        $regex = $this->getRegexForUrl($reqestUrl);
-        $this->reqest->setUrlNamaesParams($this->getUrlNameParamIfExist($reqestUrl));
-        $this->reqest->setRegex($regex);
-        $this->route[$regex] = $this->reqest;
+        $this->request = new Request($controllerName, 'GET', $requestUrl);
+        $this->urlRegex = $this->getRegexForUrl($requestUrl);
+        $this->request->setUrlNamaesParams($this->getUrlNameParamIfExist($requestUrl));
+        $this->request->setRegex($this->urlRegex);
         return $this;
     }
-    public function post(string $reqestUrl, string $controllerName): Routes
+    public function post(string $requestUrl, string $controllerName): Routes
     {
-        $this->reqest = new Request($controllerName, 'POST', $reqestUrl);
-        $regex = $this->getRegexForUrl($reqestUrl);
-        $this->reqest->setUrlNamaesParams($this->getUrlNameParamIfExist($reqestUrl));
-        $this->reqest->setRegex($regex);
-        $this->route[$regex] = $this->reqest;
+        $this->request = new Request($controllerName, 'POST', $requestUrl);
+        $this->urlRegex = $this->getRegexForUrl($requestUrl);
+        $this->request->setUrlNamaesParams($this->getUrlNameParamIfExist($requestUrl));
+        $this->request->setRegex($this->urlRegex);
         return $this;
     }
     public function name(string $nameMethod): void
     {
-        if($this->checkRequest())
-        {
-            $this->reqest->setMethodName($nameMethod);
+        if ($this->checkRequest()) {
+            $this->request->setMethodName($nameMethod);
             $this->start();
             exit;
         }
     }
     public function middleware(mixed $middlewares): Routes
     {
-        
-        if($this->checkRequest())
-        {
-            if(is_array($middlewares)) {
+
+        if ($this->checkRequest()) {
+            if (is_array($middlewares)) {
                 foreach ($middlewares as $middleware) {
                     $class = new $middleware();
                     foreach (get_class_methods($middleware) as $method) {
-                        $this->reqest = $class->$method($this->reqest);
+                        $this->request = $class->$method($this->request);
                     }
                 }
             }
             if (is_string($middlewares)) {
                 $class = new $middlewares();
                 foreach (get_class_methods($middlewares) as $method) {
-                    $this->reqest = $class->$method($this->reqest);
+                    $this->request = $class->$method($this->request);
                 }
             }
         }
@@ -65,7 +61,7 @@ class Routes
         if (preg_match('/\{([^}]*)\}/', $url)) {
             preg_match_all('/\{([^}]*)\}/', $url, $array);
             return $array[1];
-        } 
+        }
         if (!preg_match('/\{([^}]*)\}/', $url)) {
             return $array = [];
         }
@@ -75,13 +71,12 @@ class Routes
         preg_match_all('/\{([^}]*)\}/', $url, $array);
         $regex = $url;
         foreach ($array[0] as $param) {
-            if(is_string($param)) {
+            if (is_string($param)) {
                 $regex = str_replace($param, '(\w+)', $regex);
             }
-            if(is_int($param))
-            {
+            if (is_int($param)) {
                 $regex = str_replace($param, '(\d+)', $regex);
-            }
+            } 
         }
         $regex = str_replace('/', '\/', $regex);
         $regex = $regex . '\/+$';
@@ -95,10 +90,9 @@ class Routes
         foreach ($searchMethod->getParameters() as $item) {
             $name = $item->getName();
             if ((string) $item->getType() === 'Framework\Request') {
-                $paramArray[$name] = $this->route[$regex];
+                $paramArray[$name] = $this->request;
             } else if (isset($urlParam)) {
                 if (array_key_exists($name, $urlParam)) {
-
                     $paramArray[$name] = $urlParam[$name];
                 }
             } else {
@@ -112,15 +106,13 @@ class Routes
         $url = parse_url($serverUrl)['path'];
         $url = $url . '/';
         $url = str_replace('//', '/', $url);
-        return (string)$url;
+        return (string) $url;
     }
     private function getRequestIfExist(string $url): ?Request
     {
-        foreach ($this->route as $key => $value) {
-            if (preg_match($key, $url)) {
-                return $value;
-            }
-        }
+        if (preg_match($this->urlRegex, $url)) {
+                    return $this->request;
+                }
         return null;
     }
     private function getValueUrlParam($url, $regex): array
@@ -136,10 +128,9 @@ class Routes
         $http = $reqest->getProperties()['httpMethod'];
         if ($httpServerMethod === $http) {
             return true;
-        } 
-        if ($httpServerMethod !== $http)  {
-            http_response_code(405);
-            throw new Exception('The route does not support the ' . $httpServerMethod . ' method');
+        }
+        if ($httpServerMethod !== $http) {
+            throw new RouteException('The route does not support the ' . $httpServerMethod . ' method');
         }
         return false;
     }
@@ -148,15 +139,13 @@ class Routes
         if (class_exists($class)) {
             if (method_exists($class, $method)) {
                 return true;
-            } 
-            if (!method_exists($class, $method)) {
-                http_response_code(404);
-                throw new Exception('Method ' . $method .  ' not found');
             }
-        } 
+            if (!method_exists($class, $method)) {
+                throw new RouteException('Method ' . $method . ' not found');
+            }
+        }
         if (!class_exists($class)) {
-            http_response_code(404);
-            throw new Exception('Class ' . $class . ' not found');
+            throw new RouteException('Class ' . $class . ' not found');
         }
         return false;
     }
@@ -169,31 +158,28 @@ class Routes
     private function checkRequest(): bool
     {
         $url = $this->getMainUrl($_SERVER['REQUEST_URI']);
-        foreach ($this->route as $key => $value) {
-            if (preg_match($key, $url)) {
+            if (preg_match($this->urlRegex, $url)) {
                 return true;
-            }
-        }
-        return false;
+            } else return false;
     }
-    private function start(): bool
+    private function start(): void
     {
         $mainurl = $this->getMainUrl($_SERVER['REQUEST_URI']);
         $request = $this->getRequestIfExist($mainurl);
         if ($request !== null) {
             $this->checkHttpMethod();
-            $reqest = $request->getProperties();
-            $class = $reqest['controllerName'];
-            $method = $reqest['methodName'];
-            $regex = $reqest['regexForUrl'];
+            $properties = $request->getProperties();
+            $class = $properties['controllerName'];
+            $method = $properties['methodName'];
+            $regex = $properties['regexForUrl'];
             $this->checkMetodExist($class, $method);
             $request->setValueUrlParam($this->getValueUrlParam($mainurl, $regex));
-            if (isset($reqest['urlParam'])) {
+            if (isset($properties['urlParam'])) {
                 $urlParam = $request->getProperties()['urlParam'];
             }
             $this->callMethod($class, $method, $regex, $urlParam);
-            return true;
+            return;
         }
-            return false;
+        return;
     }
 }

@@ -4,8 +4,10 @@ if (isset($arg)) {
     extract($arg, EXTR_SKIP);
 }
 session_start();
-var_dump($_SESSION);
-
+echo  'Статус авторизации: ';
+if (isset($_SESSION['Auth'])) {
+    echo $_SESSION['Auth'];
+} else echo '0';
 ?>
 
 <h1>Главная страница</h1>

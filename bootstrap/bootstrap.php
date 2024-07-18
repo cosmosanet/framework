@@ -1,4 +1,5 @@
 <?php
+include_once 'vendor\framework\Exception\RouteException.php';
 include_once 'app\Middleware\Autn.php';
 include_once 'vendor\framework\Facade\Facade.php';
 include_once 'vendor\framework\Facade\Route.php';

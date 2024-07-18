@@ -2,6 +2,7 @@
 namespace Framework\Facade;
 
 use Exception;
+use Exception\RouteException;
 use Framework\Routes;
 
 /**
@@ -20,8 +21,7 @@ final class Route extends Facade
     }
     public static function isExit()
     {
-        http_response_code(404);
-        throw new Exception('Route ' . $_SERVER['REQUEST_URI'] . ' not found');
+        throw new RouteException('Route ' . $_SERVER['REQUEST_URI'] . ' not found');
     }
 
 }
