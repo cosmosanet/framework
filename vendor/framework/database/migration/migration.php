@@ -1,5 +1,4 @@
 <?php
-// namespace Framework\Database\Migration;
 include_once 'vendor/framework/database/DB.php';
 define('DB_LOCATION', 'localhost');
 define('DB_USER', 'root');

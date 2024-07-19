@@ -1,4 +1,5 @@
 <?php
+
     function printTrace(array $arr) 
     {
         if (is_array($arr)) {
@@ -9,4 +10,7 @@
                     } else echo is_int($key)? '' : $key  . ' [' . $value . '] <br>';
                 }
         } else return;
+    }
+    function csrf() {
+        echo "<input type='text' name='X-CSRF-Token' value=" . getCSRF() . " >";
     }

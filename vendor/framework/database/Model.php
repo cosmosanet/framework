@@ -106,7 +106,7 @@ class Model extends DB
             $column = implode(', ', $this->fillable);
             $this->fillable = ' ' . $column;
         }
-        $this->sqlOperator = ' FROM';
+        $this->sqlOperator = ' FROM ';
         $sql = $this->sqlBuild();
         if ($toSql) {
             return $sql;

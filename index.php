@@ -35,9 +35,10 @@ try {
         $exceptionType = str_replace('Exception\\', '', get_class($e));
         if ($exceptionType === 'RouteException') {
             http_response_code(404);
-        } else {
-            http_response_code(400);
-        }
+        } 
+        if ($exceptionType === 'CSRFException') {
+            http_response_code(401);
+        } 
     }
 
 }

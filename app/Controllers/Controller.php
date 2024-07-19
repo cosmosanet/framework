@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 
-use ReflectionFunction;
-
 class Controller
 {
     public function view(string $name, ?array $arg = null): Controller

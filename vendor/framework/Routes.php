@@ -2,9 +2,11 @@
 namespace Framework;
 
 use Exception;
+use Exception\CSRFException;
 use Exception\RouteException;
 use Framework\Facade\Route;
 use Framework\Request;
+use Framework\Token\Token;
 
 class Routes
 {
@@ -25,7 +27,17 @@ class Routes
         $this->urlRegex = $this->getRegexForUrl($requestUrl);
         $this->request->setUrlNamaesParams($this->getUrlNameParamIfExist($requestUrl));
         $this->request->setRegex($this->urlRegex);
+        $this->checkAuthorized();
         return $this;
+    }
+    private function checkAuthorized()
+    {
+       if ($this->request->getCSRF() === getCSRF()){
+        dropCSRF();
+        return;
+       } else {
+        throw new CSRFException('Route unauthorized');
+       }
     }
     public function name(string $nameMethod): void
     {

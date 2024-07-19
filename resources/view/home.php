@@ -6,7 +6,6 @@ if (isset($_SESSION['Auth'])) {
 } else echo '0';
 
 ?>
-<!-- <h1>Пользователь <?php echo isset($user) ? $user : null ?> </h1> -->
 <p>Записи из бд:</p>
 <?php
 var_dump($arg);
@@ -23,6 +22,7 @@ var_dump($_SESSION);
 </form>
 
 <form action="/post/1/" method="post">
+    <?php csrf();?>
     <input type="text" name="id" value="322">
     <input type="submit" value="OK">
 </form>

@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Models\User;
+use Framework\Api\ApiResourses;
 use Framework\Database\Model;
 use Framework\Request;
 
@@ -11,9 +13,8 @@ class UserController extends Controller
     {
         echo $number1 . ' + ' . $number2 . ' = ' .  $number1 + $number2;
         $db = new Model();
-        $request = $db->table('user')->join('qwe')->on('user.id', '=', 'qwe.id')->get();
-        // $db->table('user')->insert(['id' => null, 'name' => 'Alex']);
-        $this->view('home', ['allusers' => $request]);
+        $user = $db->table('user')->join('qwe')->on('user.id', '=', 'qwe.id')->get();
+        $this->view('home', ['allusers' => $user]);
     }
 
     public function index(Request $request) 
@@ -33,6 +34,8 @@ class UserController extends Controller
 
     public function post(Request $request, $id)
     {
-        echo $id;
+        // $user = new User();
+        // new ApiResourses($user->get());
+        echo 'CSRF РАБОТАЕТ';
     }
 }
