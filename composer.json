@@ -14,5 +14,11 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+
+    },
+    "require-dev": {
+        "aws/aws-sdk-php": "^3.316"
+    }
+    
 }

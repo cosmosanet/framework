@@ -8,7 +8,6 @@ define('DEV_MODE', true);
 // define('DEV_MODE', FALSE);
 try {
     try {
-        // require_once 'bootstrap\bootstrap.php';
         require_once __DIR__ . '/vendor/autoload.php';
     } catch (Error $e) {
         if (DEV_MODE === true) {

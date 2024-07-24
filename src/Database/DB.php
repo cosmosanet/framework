@@ -2,9 +2,6 @@
 
 namespace Framework\Database;
 
-use Error;
-use mysqli;
-
 class DB
 {
     private string $table;

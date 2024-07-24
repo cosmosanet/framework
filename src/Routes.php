@@ -1,12 +1,9 @@
 <?php
 namespace Framework;
 
-use Exception;
 use Exception\CSRFException;
 use Exception\RouteException;
-use Framework\Facade\Route;
 use Framework\Request;
-use Framework\Token\Token;
 
 class Routes
 {
