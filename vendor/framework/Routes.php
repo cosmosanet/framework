@@ -10,15 +10,21 @@ use Framework\Token\Token;
 
 class Routes
 {
+    private static $count = 0;
     private string $urlRegex;
     private Request $request;
 
+    public static function getCount()
+    {
+        return self::$count;
+    }
     public function get(string $requestUrl, string $controllerName): Routes
     {
         $this->request = new Request($controllerName, 'GET', $requestUrl);
         $this->urlRegex = $this->getRegexForUrl($requestUrl);
         $this->request->setUrlNamaesParams($this->getUrlNameParamIfExist($requestUrl));
         $this->request->setRegex($this->urlRegex);
+        self::$count ++;
         return $this;
     }
     public function post(string $requestUrl, string $controllerName): Routes
@@ -28,6 +34,7 @@ class Routes
         $this->request->setUrlNamaesParams($this->getUrlNameParamIfExist($requestUrl));
         $this->request->setRegex($this->urlRegex);
         $this->checkAuthorized();
+        self::$count ++;
         return $this;
     }
     private function checkAuthorized()

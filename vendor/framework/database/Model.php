@@ -75,7 +75,7 @@ class Model extends DB
         if ($toSql) {
             return $sql;
         }
-        $conn = $this->sqlConnect();
+        $conn = DBSingleton::connect();
         $conn->query($sql);
         mysqli_close($conn);
     }
@@ -87,7 +87,7 @@ class Model extends DB
         if ($toSql) {
             return $sql;
         }
-        $conn = $this->sqlConnect();
+        $conn = DBSingleton::connect();
         $conn->query($sql);
         mysqli_close($conn);
     }
@@ -111,7 +111,7 @@ class Model extends DB
         if ($toSql) {
             return $sql;
         }
-        $conn = $this->sqlConnect();
+        $conn = DBSingleton::connect();
         $result = $conn->query($sql);
         $rows = [];
         while ($row = mysqli_fetch_array($result)) {
@@ -140,7 +140,7 @@ class Model extends DB
         if ($toSql) {
             return $sql;
         }
-        $conn = $this->sqlConnect();
+        $conn = DBSingleton::connect();
         $result = $conn->query($sql);
         mysqli_close($conn);
         return (int) mysqli_fetch_array($result)['COUNT(*)'];   

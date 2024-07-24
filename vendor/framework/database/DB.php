@@ -9,11 +9,7 @@ class DB
 {
     private string $table;
     private array $parametrs;
-    protected function sqlConnect(): mysqli
-    {
-        $conn = new mysqli(DB_LOCATION, DB_USER, DB_PASSWORD, DB_NAME);
-        return $conn;
-    }
+ 
     public function table(string $name): DB
     {
         $this->table = $name;
@@ -39,7 +35,7 @@ class DB
         foreach ($this->parametrs as $key => $value) {
             $sql = $sql . ' ' . $key . ' ' . $value;
         }
-        $conn = $this->sqlConnect();
+        $conn = DBSingleton::connect();
         $conn->query($sql);
         mysqli_close($conn);
     }

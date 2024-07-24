@@ -1,4 +1,6 @@
 <?php
+include_once 'vendor\framework\Singleton\Singletone.php';
+include_once 'vendor\framework\database\DBSingleton.php';
 include_once 'vendor\framework\Token\Token.php';
 include_once 'vendor\framework\CoreFunc.php';
 include_once 'vendor\framework\Exception\RouteException.php';

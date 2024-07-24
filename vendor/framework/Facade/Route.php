@@ -9,6 +9,7 @@ use Framework\Routes;
  * @method static Routes get(string $reqestUrl, string $controllerName)
  * @method static Routes post(string $reqestUrl, string $controllerName)
  * @method void name(string $nameMethod)
+ * @method int getCount()
  * 
  * @see Framework\Route
  */

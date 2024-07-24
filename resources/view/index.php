@@ -10,7 +10,7 @@ if (isset($_SESSION['Auth'])) {
 } else echo '0';
 ?>
 
-<h1>Главная страница</h1>
+<h1>Главная страница!!</h1>
 <p>
     <a href="/dropSession">SESSION DELETE</a>
     <a href="/auth">Auth</a>
