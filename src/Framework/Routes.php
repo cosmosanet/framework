@@ -1,10 +1,6 @@
 <?php
 namespace Framework;
 
-<<<<<<<< HEAD:src/Framework/Routes.php
-
-========
->>>>>>>> origin:src/Routes.php
 use Exception\CSRFException;
 use Exception\RouteException;
 use Framework\Request;
