@@ -1,7 +1,6 @@
 <?php
 namespace Framework\Facade;
 
-use Exception;
 use Exception\RouteException;
 use Framework\Routes;
 

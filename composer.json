@@ -1,0 +1,17 @@
+{
+    "name": "a/a",
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "src/framework",
+            "Exception\\": "src/Exception",
+            "App\\": "app"
+        }
+    },
+    "authors": [
+        {
+            "name": "grigorii",
+            "email": "g.a.patr@bk.ru"
+        }
+    ],
+    "require": {}
+}

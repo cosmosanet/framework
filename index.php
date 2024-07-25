@@ -8,6 +8,7 @@ define('DEV_MODE', true);
 // define('DEV_MODE', FALSE);
 try {
     try {
+        require_once __DIR__ . '/vendor/autoload.php';
         require_once 'bootstrap\bootstrap.php';
     } catch (Error $e) {
         if (DEV_MODE === true) {
@@ -16,7 +17,7 @@ try {
             $exceptionFile = $e->getFile();
             $exceptionLine = $e->getLine();
             $exceptionTrace = $e->getTrace();
-            include_once 'vendor\framework\CoreFunc.php';
+            include_once 'src\framework\CoreFunc.php';
             require_once 'ExeptionPage.php';
         } else {
                 http_response_code(500);
@@ -29,7 +30,7 @@ try {
         $exceptionFile = $e->getFile();
         $exceptionLine = $e->getLine();
         $exceptionTrace = $e->getTrace();
-        include_once 'vendor\framework\CoreFunc.php';
+        include_once 'src\framework\CoreFunc.php';
         require_once 'ExeptionPage.php';
     } else {
         $exceptionType = str_replace('Exception\\', '', get_class($e));

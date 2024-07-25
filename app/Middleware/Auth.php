@@ -3,7 +3,7 @@ namespace App\Middleware;
 
 use Framework\Request;
 
-class Auth 
+class Auth
 {
     public function zxc(Request $request): ?Request
     {
