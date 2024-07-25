@@ -32,5 +32,3 @@
         session_start();
         return $_SESSION['X-CSRF-Token'];
     }
-
-    setCSRF();

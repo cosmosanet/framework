@@ -2,7 +2,6 @@
 namespace Framework;
 
 use Exception\CSRFException;
-use RoutingInterface;
 
 class Request
 {
