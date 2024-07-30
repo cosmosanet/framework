@@ -17,7 +17,7 @@ try {
             $exceptionFile = $e->getFile();
             $exceptionLine = $e->getLine();
             $exceptionTrace = $e->getTrace();
-            require_once __DIR__ . '/src/framework/CoreFunc.php';
+            require_once __DIR__ . '/src/Framework/CoreFunc.php';
             require_once __DIR__ . '/ExeptionPage.php';
         } else {
                 http_response_code(500);
@@ -30,7 +30,7 @@ try {
         $exceptionFile = $e->getFile();
         $exceptionLine = $e->getLine();
         $exceptionTrace = $e->getTrace();
-        require_once __DIR__ . '/src/framework/CoreFunc.php';
+        require_once __DIR__ . '/src/Framework/CoreFunc.php';
         require_once __DIR__ . '/ExeptionPage.php';
     } else {
         $exceptionType = str_replace('Exception\\', '', get_class($e));
