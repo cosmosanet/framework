@@ -1,17 +1,15 @@
 <?php
 
-define('DB_LOCATION', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASSWORD', '');
-define('DB_NAME', 'project');
-define('DEV_MODE', true);
-// define('DEV_MODE', FALSE);
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Framework\Env\Env;
+new Env(null);
+
 try {
     try {
-        require_once __DIR__ . '/vendor/autoload.php';
         require_once __DIR__ . '/bootstrap/bootstrap.php';
     } catch (Error $e) {
-        if (DEV_MODE === true) {
+        if (DEV_MODE == true) {
             $exceptionType = str_replace('Exception\\', '', get_class($e));
             $exceptionMassage = $e->getMessage();
             $exceptionFile = $e->getFile();
@@ -24,7 +22,7 @@ try {
         }
     }
 } catch (Exception $e) {
-    if (DEV_MODE === true) {
+    if (DEV_MODE == true) {
         $exceptionType = str_replace('Exception\\', '', get_class($e));
         $exceptionMassage = $e->getMessage();
         $exceptionFile = $e->getFile();

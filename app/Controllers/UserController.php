@@ -24,8 +24,6 @@ class UserController extends Controller
 
     public function index(Request $request) 
     {
-        var_dump(DBSingleton::connect());
-        var_dump(DBSingleton::connect());
         self::view('index');
     }
     public function dropSession()
