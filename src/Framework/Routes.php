@@ -24,20 +24,23 @@ class Routes
         $this->urlRegex = $this->getRegexForUrl($requestUrl);
         $this->request->setUrlNamaesParams($this->getUrlNameParamIfExist($requestUrl));
         $this->request->setRegex($this->urlRegex);
-        if($this->checkRequest())
-        {
+        if ($this->checkRequest()) {
             $this->checkAuthorized();
         }
         return $this;
     }
     private function checkAuthorized()
     {
-       if ($this->request->getCSRF() === getCSRF()){
-        dropCSRF();
-        return;
-       } else {
-        throw new CSRFException('Route unauthorized');
-       }
+        // if (key_exists('Authorization', getallheaders())) {
+        //    $token = explode('basic', getallheaders()['Authorization'])[1];
+        // } 
+        // @todo Узнать как сделать хранилище ключей доступа 
+        if ($this->request->getCSRF() === getCSRF()) {
+            dropCSRF();
+            return;
+        } else {
+            throw new CSRFException('Route unauthorized');
+        }
     }
     public function name(string $nameMethod): void
     {
@@ -88,7 +91,7 @@ class Routes
             }
             if (is_int($param)) {
                 $regex = str_replace($param, '(\d+)', $regex);
-            } 
+            }
         }
         $regex = str_replace('/', '\/', $regex);
         $regex = $regex . '\/+$';
@@ -123,8 +126,8 @@ class Routes
     private function getRequestIfExist(string $url): ?Request
     {
         if (preg_match($this->urlRegex, $url)) {
-                    return $this->request;
-                }
+            return $this->request;
+        }
         return null;
     }
     private function getValueUrlParam($url, $regex): array
@@ -170,9 +173,10 @@ class Routes
     private function checkRequest(): bool
     {
         $url = $this->getMainUrl($_SERVER['REQUEST_URI']);
-            if (preg_match($this->urlRegex, $url)) {
-                return true;
-            } else return false;
+        if (preg_match($this->urlRegex, $url)) {
+            return true;
+        } else
+            return false;
     }
     private function start(): void
     {
