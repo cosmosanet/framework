@@ -9,7 +9,7 @@ define('DEV_MODE', true);
 try {
     try {
         require_once __DIR__ . '/vendor/autoload.php';
-        require_once 'bootstrap\bootstrap.php';
+        require_once __DIR__ . 'bootstrap\bootstrap.php';
     } catch (Error $e) {
         if (DEV_MODE === true) {
             $exceptionType = str_replace('Exception\\', '', get_class($e));
@@ -17,8 +17,8 @@ try {
             $exceptionFile = $e->getFile();
             $exceptionLine = $e->getLine();
             $exceptionTrace = $e->getTrace();
-            include_once 'src\framework\CoreFunc.php';
-            require_once 'ExeptionPage.php';
+            require_once __DIR__ . 'src\framework\CoreFunc.php';
+            require_once __DIR__ . 'ExeptionPage.php';
         } else {
                 http_response_code(500);
         }
@@ -30,8 +30,8 @@ try {
         $exceptionFile = $e->getFile();
         $exceptionLine = $e->getLine();
         $exceptionTrace = $e->getTrace();
-        include_once 'src\framework\CoreFunc.php';
-        require_once 'ExeptionPage.php';
+        require_once __DIR__ . 'src\framework\CoreFunc.php';
+        require_once __DIR__ . 'ExeptionPage.php';
     } else {
         $exceptionType = str_replace('Exception\\', '', get_class($e));
         if ($exceptionType === 'RouteException') {

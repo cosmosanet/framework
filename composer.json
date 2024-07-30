@@ -2,7 +2,7 @@
     "name": "a/a",
     "autoload": {
         "psr-4": {
-            "Framework\\": "src/framework",
+            "Framework\\": "src/Framework",
             "Exception\\": "src/Exception",
             "App\\": "app"
         }
