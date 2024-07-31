@@ -12,14 +12,19 @@ class DB
         $this->table = $name;
         return $this;
     }
-    public function string($name): DB
+    public function string(string $name, ?int $count = null): DB
     {
-        $this->parametrs[$name] = 'STRING';
+        $this->parametrs[$name] = 'varchar';
+        if ($count) {
+            $this->parametrs[$name] .= ' (' . $count . ')';
+        }
+        $this->parametrs[$name] .= ' (' . 255 . ')';
         return $this;
     }
-    public function int()
+    public function int(string $name): DB
     {
-
+        $this->parametrs[$name] .= ' (' . 255 . ')';
+        return $this;
     }
     public function getPatametr(): array
     {
@@ -27,22 +32,25 @@ class DB
     }
     public function create(): void
     {
-        $sql = 'CREATE TABLE ' . DB_NAME . $this->table . '(';
-        $sql = "";
+        $sql = 'CREATE TABLE ' . $this->table . ' (';
         foreach ($this->parametrs as $key => $value) {
-            $sql = $sql . ' ' . $key . ' ' . $value;
+            $sql = $sql . $key . ' ' . $value . ', ';
         }
+        $sql = rtrim($sql, " ,");
+        $sql .= ');';
         $conn = DBSingleton::connect();
         $conn->query($sql);
         mysqli_close($conn);
+        // echo $sql;
     }
     public function toSql(): string
     {
-        $sql = 'CREATE TABLE ' . DB_NAME . $this->table . '(';
+        $sql = 'CREATE TABLE ' . $this->table . ' (';
         foreach ($this->parametrs as $key => $value) {
-            $sql = $sql . ' ' . $key . ' ' . $value;
+            $sql = $sql . $key . ' ' . $value . ', ';
         }
-        return $sql . ')';
+        $sql = rtrim($sql, " ,");
+        return $sql .= ');';
     }
 
 

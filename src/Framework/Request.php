@@ -2,9 +2,12 @@
 namespace Framework;
 
 use Exception\CSRFException;
+use Framework\Traits\RedirectTrait;
+use Framework\Validator\Validator;
 
 class Request
 {
+    USE RedirectTrait;
     private string $controllerName;
     private string $methodName;
     private string $httpMethod;
@@ -86,5 +89,23 @@ class Request
         $httpMethod = $_SERVER['REQUEST_METHOD'];
         $serverUrl = $_SERVER['REQUEST_URI'];
         throw new CSRFException('HTTP '. $httpMethod .' request ' . $serverUrl . ' does not have CSRF token.');
+    }
+    private function getRequestValues(string $key)
+    {
+        $httpMethod = strtolower($this->httpMethod);
+        return $this->$httpMethod($key);
+    }
+
+    public function validate(array $rules, ?array $massages = null) {
+        $error = [];
+        foreach ($rules as $key => $ruleAndArg) {
+            $requestValue = $this->getRequestValues($key);
+            $validator = new Validator($requestValue, $ruleAndArg);
+            if (!is_null($validator->startValidate())) {
+                $error[$key] = $validator->startValidate();
+            }
+        }
+        $_SESSION['error'] = $error;
+        $this->redirect($_SERVER['HTTP_REFERER']);
     }
 }

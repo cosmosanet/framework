@@ -23,6 +23,7 @@ var_dump($_SESSION);
 
 <form action="/post/1/" method="post">
     <?php csrf();?>
-    <input type="text" name="id" value="322">
+    <input type="number" name="id" value="322">
+    <input type="text" name="name" value="Григорий">
     <input type="submit" value="OK">
 </form>

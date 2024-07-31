@@ -24,9 +24,9 @@ class Routes
         $this->urlRegex = $this->getRegexForUrl($requestUrl);
         $this->request->setUrlNamaesParams($this->getUrlNameParamIfExist($requestUrl));
         $this->request->setRegex($this->urlRegex);
-        if ($this->checkRequest()) {
-            $this->checkAuthorized();
-        }
+        // if ($this->checkRequest()) {
+        //     $this->checkAuthorized();
+        // }
         return $this;
     }
     private function checkAuthorized()

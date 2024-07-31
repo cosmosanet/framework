@@ -2,7 +2,7 @@
 namespace Framework\Env;
 
 use Exception\EnvExeption;
-use Framework\Traites\ArrayTrait;
+use Framework\Traits\ArrayTrait;
 
 class Env
 {
@@ -10,10 +10,10 @@ class Env
     public function __construct(?string $pathToFile)
     {
         $fileContent = $this->getEnvFileContent($pathToFile);
-        $this->setDefinefronEnv($this->getEnvFileVars($fileContent));
+        $this->setDefinefromEnv($this->getEnvFileVars($fileContent));
     }
-    
-    private function getEnvFileContent (?string $pathToFile): string
+
+    private function getEnvFileContent(?string $pathToFile): string
     {
         if (!$pathToFile) {
             $pathToFile = $_SERVER['DOCUMENT_ROOT'] . '/.env';
@@ -22,27 +22,28 @@ class Env
         return file_get_contents($pathToFile);
     }
 
-    private function checkFileOrFail(string $pathToFile) {
+    private function checkFileOrFail(string $pathToFile): bool
+    {
         if (file_exists($pathToFile)) {
             return true;
-        } 
+        }
         throw new EnvExeption('File: ' . $pathToFile . ' not found.');
     }
 
-    private function getEnvFileVars(string $fileContetnt)
+    private function getEnvFileVars(string $fileContetnt): array
     {
-        $envVars = explode("\n" , $fileContetnt);
+        $envVars = explode("\n", $fileContetnt);
         $envVars = $this->deleteEmty($envVars);
         $envVarsArray = [];
         foreach ($envVars as $var) {
             $var = rtrim($var);
             $tempArray = explode('=', $var);
-            $envVarsArray[$tempArray[0]]= $tempArray[1];
+            $envVarsArray[$tempArray[0]] = $tempArray[1];
         }
         return $envVarsArray;
     }
 
-    public function setDefinefronEnv(array $envVarsArray)
+    public function setDefinefromEnv(array $envVarsArray): void
     {
         foreach ($envVarsArray as $key => $value) {
             define($key, $value);

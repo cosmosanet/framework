@@ -1,5 +1,5 @@
 <?php
-namespace Framework\Traites;
+namespace Framework\Traits;
 
 trait ArrayTrait
 {
