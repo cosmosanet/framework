@@ -5,7 +5,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Framework\Env\Env;
 
 new Env(null);
-
 try {
     try {
         require_once __DIR__ . '/bootstrap/bootstrap.php';

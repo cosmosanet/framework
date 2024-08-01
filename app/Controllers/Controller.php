@@ -10,9 +10,9 @@ class Controller
     }
     public function view(string $name, ?array $arg = null): Controller
     {
+        include_once 'resources/view/layout/head.php';
         include_once $_SERVER['DOCUMENT_ROOT'] . '/resources/view/' . $name . '.php';
         include_once 'resources/view/layout/footer.php';
-        include_once 'resources/view/layout/head.php';
         unset($_SESSION['error']);
         return $this;
     } 

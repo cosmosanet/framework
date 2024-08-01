@@ -9,11 +9,10 @@ class UserController extends Controller
 {
     public function home(Request $request, int $number1, string $number2): void
     {
-        print_r( $_SESSION['error']);
-        echo $number1 . ' + ' . $number2 . ' = ' .  $number1 + $number2;
+        $string = $number1 . ' + ' . $number2 . ' = ' .  $number1 + $number2;
         $db = new Model();
         $user = $db->table('user')->join('qwe')->on('user.id', '=', 'qwe.id')->get();
-        $this->view('home', ['allusers' => $user]);
+        $this->view('home', ['allusers' => $user, 'string' =>  $string]);
     }
 
     public function index(Request $request) 
