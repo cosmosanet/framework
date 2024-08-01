@@ -15,7 +15,7 @@ class Controller
         include_once 'resources/view/layout/head.php';
         unset($_SESSION['error']);
         return $this;
-    }
+    } 
     public function redirect(string $url): Controller
     {   
         $this->standartRedirect($url);
@@ -23,7 +23,6 @@ class Controller
     }
     public function session(array $arg): void
     {
-        session_start();
         $_SESSION = $arg;
     }
 }

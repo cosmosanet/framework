@@ -22,7 +22,6 @@ class UserController extends Controller
     }
     public function dropSession()
     {
-        session_start();
         session_destroy();
         self::redirect('/');
     }
@@ -42,4 +41,5 @@ class UserController extends Controller
         // new ApiResourses($user->get());
         // echo 'CSRF РАБОТАЕТ' . $_SERVER['HTTP_REFERER'];
     }
+    
 }

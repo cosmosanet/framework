@@ -3,7 +3,6 @@
 if (isset($arg)) {
     extract($arg, EXTR_SKIP);
 }
-session_start();
 echo  'Статус авторизации: ';
 if (isset($_SESSION['Auth'])) {
     echo $_SESSION['Auth'];

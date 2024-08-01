@@ -9,10 +9,6 @@ if (isset($_SESSION['Auth'])) {
 <p>Записи из бд:</p>
 <?php
 var_dump($arg);
-
-
-
-session_start();
 var_dump($_SESSION);
 
 ?>

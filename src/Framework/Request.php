@@ -106,6 +106,9 @@ class Request
             }
         }
         $_SESSION['error'] = $error;
-        $this->redirect($_SERVER['HTTP_REFERER']);
+        if (!empty($_SESSION['error']))
+        {
+            $this->redirect($_SERVER['HTTP_REFERER']);
+        }
     }
 }

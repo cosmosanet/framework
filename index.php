@@ -33,12 +33,10 @@ try {
         require_once __DIR__ . '/ExeptionPage.php';
     } else {
         $exceptionType = str_replace('Exception\\', '', get_class($e));
-        if ($exceptionType === 'RouteException') {
-            http_response_code(404);
-        } 
-        if ($exceptionType === 'CSRFException') {
-            http_response_code(401);
-        } 
+        if (method_exists($e, 'getHttpStatus')) {
+            http_response_code($e->getHttpStatus());
+        }
     }
+    //@todo сделать нормальный класс
 
 }
