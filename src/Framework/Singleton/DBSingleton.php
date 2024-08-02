@@ -1,6 +1,7 @@
 <?php
 
-namespace Framework\Database;
+namespace Framework\Singleton;
+
 use Framework\Singleton\Singletone;
 use mysqli;
 

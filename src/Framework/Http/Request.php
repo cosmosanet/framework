@@ -1,5 +1,5 @@
 <?php
-namespace Framework;
+namespace Framework\Http;
 
 use Exception\CSRFException;
 use Framework\Traits\RedirectTrait;

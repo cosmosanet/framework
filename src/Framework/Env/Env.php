@@ -7,7 +7,8 @@ use Framework\Traits\ArrayTrait;
 class Env
 {
     use ArrayTrait;
-    public function __construct(?string $pathToFile)
+    
+    public function setEnv(?string $pathToFile = null)
     {
         $fileContent = $this->getEnvFileContent($pathToFile);
         $this->setDefinefromEnv($this->getEnvFileVars($fileContent));

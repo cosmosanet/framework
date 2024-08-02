@@ -3,6 +3,7 @@
 namespace Framework\Database;
 
 use Framework\Database\DB;
+use Framework\Singleton\DBSingleton;
 
 class Model extends DB
 {

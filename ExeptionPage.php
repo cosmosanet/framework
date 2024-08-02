@@ -12,7 +12,7 @@
     <div class="text-white pt-3 border-bottom border-dark">
         <div class="d-felx flex-column px-3">
             <div>
-                <p class="h5"> <?php echo $exceptionType ?> </p>
+                <p class="h5"> <?php echo $throwableType ?> </p>
             </div>
           <h1> <?php echo $exceptionMassage ?></h1> 
         </div>

@@ -2,7 +2,7 @@
 namespace Framework\Facade;
 
 use Exception\RouteException;
-use Framework\Routes;
+use Framework\Http\Routes;
 
 /**
  * @method static Routes get(string $reqestUrl, string $controllerName)
@@ -10,7 +10,7 @@ use Framework\Routes;
  * @method void name(string $nameMethod)
  * @method int getCount()
  * 
- * @see Framework\Route
+ * @see Framework\Http\Route
  */
 
 final class Route extends Facade

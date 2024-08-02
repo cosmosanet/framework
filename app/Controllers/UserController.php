@@ -2,12 +2,13 @@
 
 namespace App\Controllers;
 
+use App\Controllers\Controller;
 use Framework\Database\Model;
-use Framework\Request;
+use Framework\Http\Request;
 
 class UserController extends Controller
 {
-    public function home(Request $request, int $number1, string $number2): void
+    public function home(Request $request, int $number1, int $number2): void
     {
         $string = $number1 . ' + ' . $number2 . ' = ' .  $number1 + $number2;
         $db = new Model();

@@ -1,9 +1,10 @@
 <?php
-namespace Framework;
+namespace Framework\Http;
 
 use Exception\CSRFException;
 use Exception\RouteException;
-use Framework\Request;
+use Framework\Http\Request;
+use Throwable;
 
 class Routes
 {
@@ -104,10 +105,16 @@ class Routes
         $searchMethod = new \ReflectionMethod($class, $method);
         foreach ($searchMethod->getParameters() as $item) {
             $name = $item->getName();
-            if ((string) $item->getType() === 'Framework\Request') {
+            if ((string)$item->getType() === 'Framework\Http\Request') {
                 $paramArray[$name] = $this->request;
             } else if (isset($urlParam)) {
                 if (array_key_exists($name, $urlParam)) {
+                    // $urlParamType = settype($urlParam[$name], (string)$item->getType());
+                    // if ((string)$item->getType() !== (string)gettype($urlParam[$name]))
+                    // {
+                    //     var_dump((string)$item->getType(),(string)gettype($urlParam[$name]));
+                    //     throw new RouteException('Unfeathered parameter ' . $urlParam[$name] . ' type');
+                    // }
                     $paramArray[$name] = $urlParam[$name];
                 }
             } else {
@@ -168,7 +175,11 @@ class Routes
     {
         $paramArray = $this->getParam($class, $method, $regex, $urlParam);
         $callMethod = new $class;
-        $callMethod->$method(...$paramArray);
+        try {
+            $callMethod->$method(...$paramArray);
+        } catch (Throwable $th) {
+            throw new RouteException('Unfeathered parameter type');
+        }
     }
     private function checkRequest(): bool
     {

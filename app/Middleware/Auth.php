@@ -1,7 +1,7 @@
 <?php
 namespace App\Middleware;
 
-use Framework\Request;
+use Framework\Http\Request;
 
 class Auth
 {

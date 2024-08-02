@@ -2,6 +2,8 @@
 
 namespace Framework\Database;
 
+use Framework\Singleton\DBSingleton;
+
 class DB
 {
     private string $table;
