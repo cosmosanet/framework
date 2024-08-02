@@ -18,7 +18,10 @@ class Validator
     }
     private function require(): mixed
     {
-        return empty($this->requestValue) ? 'Is not require' : true;
+        if (empty($this->requestValue) && $this->requestValue != '0') {
+            return 'Require';
+        }
+        return true;
     }
     private function int(): mixed
     {

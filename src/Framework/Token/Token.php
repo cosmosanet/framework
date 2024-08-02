@@ -1,6 +1,9 @@
 <?php
+namespace Framework\Token;
 
-    function genToken() {
+class Token
+    {
+    public static function genToken() {
         $token = sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
             mt_rand(0, 0xffff),
@@ -12,24 +15,23 @@
             mt_rand(0, 0xffff),
             mt_rand(0, 0xffff)
         );
-     
+        
         return $token;
     }
-    function setCSRF()
+    public static function setCSRF()
     {
-        session_start();
+        // session_start();
         if (!isset($_SESSION['X-CSRF-Token']))
         {
-            $_SESSION['X-CSRF-Token'] = genToken();
+            $_SESSION['X-CSRF-Token'] = self::genToken();
         }
     }
-    function dropCSRF() {
-        session_start();
+    public static function dropCSRF() {
+        // session_start();
         unset($_SESSION['X-CSRF-Token']);
     }
-    function getCSRF()
+    public static function getCSRF()
     {
-        session_start();
         return $_SESSION['X-CSRF-Token'];
     }
-    setCSRF();
+} 

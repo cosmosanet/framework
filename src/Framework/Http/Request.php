@@ -90,13 +90,14 @@ class Request
         $serverUrl = $_SERVER['REQUEST_URI'];
         throw new CSRFException('HTTP '. $httpMethod .' request ' . $serverUrl . ' does not have CSRF token.');
     }
-    private function getRequestValues(string $key)
+    private function getRequestValues(?string $key = null)
     {
         $httpMethod = strtolower($this->httpMethod);
         return $this->$httpMethod($key);
     }
 
-    public function validate(array $rules, ?array $massages = null) {
+    public function validate(array $rules, ?array $massages = null): bool
+    {
         $error = [];
         foreach ($rules as $key => $ruleAndArg) {
             $requestValue = $this->getRequestValues($key);
@@ -108,7 +109,14 @@ class Request
         $_SESSION['error'] = $error;
         if (!empty($_SESSION['error']))
         {
+            $_SESSION['old'] = $this->getRequestValues();
             $this->redirect($_SERVER['HTTP_REFERER']);
+            // return false;
+            exit; 
+        }
+        if (empty($_SESSION['error']))
+        {
+            return true;
         }
     }
 }

@@ -14,12 +14,12 @@ class ThrowableHandler
             if (DEV_MODE == 'true') {
                 $throwableType = $this->getThrowableType($th);
                 extract($this->getThrowableMassages($th));
-                require_once $_SERVER['DOCUMENT_ROOT'] . '/src/Framework/CoreFunc.php';
+                require_once $_SERVER['DOCUMENT_ROOT'] . '/src/Framework/Helpers/PrintHelper.php';
                 require_once $_SERVER['DOCUMENT_ROOT'] . '/ExeptionPage.php';
             }
             if (DEV_MODE == 'false') {
                 if ($this->getHttpStatusIfExist($th)) {
-                    http_response_code($this->getHttpStatusIfExist($e));
+                    http_response_code($this->getHttpStatusIfExist($th));
                 } else {
                     http_response_code(500);
                 }

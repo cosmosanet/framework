@@ -3,6 +3,7 @@ namespace Framework\Http;
 
 use Exception\CSRFException;
 use Exception\RouteException;
+use Framework\Facade\Application;
 use Framework\Http\Request;
 use Throwable;
 
@@ -36,8 +37,8 @@ class Routes
         //    $token = explode('basic', getallheaders()['Authorization'])[1];
         // } 
         // @todo Узнать как сделать хранилище ключей доступа 
-        if ($this->request->getCSRF() === getCSRF()) {
-            dropCSRF();
+        if ($this->request->getCSRF() === Application::getCSRF()) {
+            Application::dropCSRF();
             return;
         } else {
             throw new CSRFException('Route unauthorized');
@@ -175,11 +176,12 @@ class Routes
     {
         $paramArray = $this->getParam($class, $method, $regex, $urlParam);
         $callMethod = new $class;
-        try {
+        // try {
             $callMethod->$method(...$paramArray);
-        } catch (Throwable $th) {
-            throw new RouteException('Unfeathered parameter type');
-        }
+        // } catch (Throwable $th) {
+        //     throw new RouteException('Unfeathered parameter type');
+        // }
+        //@todo починить ислючение неверного параметра.
     }
     private function checkRequest(): bool
     {

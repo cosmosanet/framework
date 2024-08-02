@@ -14,6 +14,7 @@ class Controller
         include_once $_SERVER['DOCUMENT_ROOT'] . '/resources/view/' . $name . '.php';
         include_once 'resources/view/layout/footer.php';
         unset($_SESSION['error']);
+        unset($_SESSION['old']);
         return $this;
     } 
     public function redirect(string $url): Controller
