@@ -1,6 +1,8 @@
 <?php
 namespace Framework\Validator;
 
+use Error;
+use Exception;
 use Framework\Traits\RedirectTrait;
 
 class Validator
@@ -9,25 +11,60 @@ class Validator
     private $requestValue;
     private string $ruleAndArg;
     private string $type;
-    private string $errors;
-
-    public function __construct(mixed $requestValue, string $ruleAndArg)
+    private bool $validateStatus = true;
+    private array $error = [];
+    //@todo подумать как реализовать + сделать возможность наследования от request + Сдеать так чтобы метод отдавал false при провале валидации
+    public function __construct(array $rules, mixed $requestValues)
     {
-        $this->requestValue = $requestValue;
-        $this->ruleAndArg = $ruleAndArg;
+        foreach ($rules as $key => $ruleAndArg) {
+            $requestValue = $requestValues[$key];
+            $this->requestValue = $requestValue;
+            $this->ruleAndArg = $ruleAndArg;
+            if (!is_null($this->startValidate($requestValue, $ruleAndArg))) {
+                $this->error[$key] = $this->startValidate();
+            }
+        }
+        $_SESSION['error'] = $this->error;
+        $error = $this->checkValidateError();
+        $this->setValidateStatus($error);
+        if (!$this->getValidateStatus()) {
+            $_SESSION['old'] = $requestValues;
+            $this->redirect($_SERVER['HTTP_REFERER']);
+            // return false;
+            exit;
+        }
     }
-    private function require(): mixed
+    private function setValidateStatus(bool $error): void
+    {
+        if (!empty($error)) {
+            $this->validateStatus = false;
+        }
+        if (empty($error)) {
+            if ($this->validateStatus !== true) {
+                $this->validateStatus = true;
+            }
+        }
+    }
+    private function checkValidateError(): bool
+    {
+        return (!empty($_SESSION['error'])) ? true : false;
+    }
+    public function getValidateStatus(): bool
+    {
+        return $this->validateStatus;
+    }
+    private function require()
     {
         if (empty($this->requestValue) && $this->requestValue != '0') {
             return 'Require';
         }
         return true;
     }
-    private function int(): mixed
+    private function int()
     {
         if (is_numeric($this->requestValue)) {
             $this->type = 'int';
-            $this->requestValue = (int)$this->requestValue;
+            $this->requestValue = (int) $this->requestValue;
             return true;
         } else {
             return 'Is not int';
@@ -37,7 +74,7 @@ class Validator
     {
         if (is_string($this->requestValue)) {
             $this->type = 'text';
-            $this->requestValue = (string)$this->requestValue;
+            $this->requestValue = (string) $this->requestValue;
             return true;
         } else {
             return 'Is not text';
@@ -69,11 +106,11 @@ class Validator
                 return strlen($this->requestValue) >= $count ? true : 'Value too small';
         }
     }
-    private function regex(int $regex): mixed
+    private function regex(int $regex): bool
     {
         return preg_match($regex, $this->requestValue);
     }
-    public function startValidate()
+    public function startValidate(): ?string
     {
         foreach (explode('|', $this->ruleAndArg) as $item) {
             $rule = explode(':', $item);
@@ -82,11 +119,12 @@ class Validator
                 if ($this->$action($rule[1]) !== true) {
                     return $this->$action($rule[1]);
                 }
-            } else {    
+            } else {
                 if ($this->$action() !== true) {
                     return $this->$action();
                 }
             }
         }
+        return null;
     }
 }

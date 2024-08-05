@@ -12,45 +12,40 @@ class UserController extends Controller
     {
         $db = new Model();
         $user = $db->table('user')->join('qwe')->on('user.id', '=', 'qwe.id')->get();
-        $this->view('home', ['allusers' => $user, 'number1' =>  $number1, 'number2' => $number2]);
+        $this->view('home', ['allusers' => $user, 'number1' => $number1, 'number2' => $number2]);
     }
 
-    public function index(Request $request) 
-    { 
+    public function index(Request $request): void
+    {
         self::view('index');
     }
-    public function dropSession()
+    public function dropSession(): void
     {
         session_destroy();
         self::redirect('/');
     }
-    public function auth()
+    public function auth(): void
     {
         self::redirect('/')->session(['Auth' => 1]);
     }
 
-    public function post(Request $request, $id)
+    public function post(Request $request, $id): void
     {
         $request->validate([
             'id' => 'int|max:123',
-            'name' => 'require|text|min:6'
+            'name' => 'require|text|min:6',
         ]);
         echo 'ПОБЕДА';
-        // $user = new User();
-        // new ApiResourses($user->get());
-        // echo 'CSRF РАБОТАЕТ' . $_SERVER['HTTP_REFERER'];
     }
 
-    public function calculate(Request $request)
+    public function calculate(Request $request): void
     {
         $validate = $request->validate([
             'number1' => 'require|int|min:1',
-            'number2' => 'require|int|min:1'
+            'number2' => 'require|int|min:1',
         ]);
-        // if ($validate) {
-            $get = $request->get();
-            self::redirect('/addition/'. $get['number1'] . '/plus/'. $get['number2']);
-        // }
+        $get = $request->get();
+        self::redirect('/addition/' . $get['number1'] . '/plus/' . $get['number2']);
     }
-    
+
 }

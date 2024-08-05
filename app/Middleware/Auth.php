@@ -7,11 +7,9 @@ class Auth
 {
     public function zxc(Request $request): ?Request
     {
-        if(isset($_SESSION['Auth']))
-        {
+        if (isset($_SESSION['Auth'])) {
             return $request;
-        }
-         else {
+        } else {
             header('Location: /');
             return null;
         }

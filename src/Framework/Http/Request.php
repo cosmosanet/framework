@@ -1,13 +1,14 @@
 <?php
 namespace Framework\Http;
 
+use Exception;
 use Exception\CSRFException;
 use Framework\Traits\RedirectTrait;
 use Framework\Validator\Validator;
 
 class Request
 {
-    USE RedirectTrait;
+    use RedirectTrait;
     private string $controllerName;
     private string $methodName;
     private string $httpMethod;
@@ -23,13 +24,14 @@ class Request
     {
         return $this->regexForUrl;
     }
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token;
     }
-    public function setToken(string $token)
+    public function setToken(string $token): void
     {
-        $this->token = $token;;
+        $this->token = $token;
+        ;
     }
     public function getProperties(): array
     {
@@ -52,17 +54,17 @@ class Request
         }
         return $array;
     }
-    public function setUrlNamaesParams(array $namesParam)
+    public function setUrlNamaesParams(array $namesParam): void
     {
         foreach ($namesParam as $item) {
             array_push($this->urlParam, $item);
         }
     }
-    public function setMethodName($name)
+    public function setMethodName($name): void
     {
         $this->methodName = $name;
     }
-    public function setValueUrlParam(array $ValuesParam)
+    public function setValueUrlParam(array $ValuesParam): void
     {
         $this->urlParam = array_combine($this->urlParam, $ValuesParam);
     }
@@ -78,45 +80,27 @@ class Request
     {
         return is_null($name) ? $_GET : $_GET[$name];
     }
-    public function getCSRF()
+    public function getCSRF(): mixed
     {
-        if(isset($_POST['X-CSRF-Token'])) {
+        if (isset($_POST['X-CSRF-Token'])) {
             return $_POST['X-CSRF-Token'];
-        } 
-        if(isset($_GET['X-CSRF-Token'])) {
+        }
+        if (isset($_GET['X-CSRF-Token'])) {
             return $_GET['X-CSRF-Token'];
-        } 
+        }
         $httpMethod = $_SERVER['REQUEST_METHOD'];
         $serverUrl = $_SERVER['REQUEST_URI'];
-        throw new CSRFException('HTTP '. $httpMethod .' request ' . $serverUrl . ' does not have CSRF token.');
+        throw new CSRFException('HTTP ' . $httpMethod . ' request ' . $serverUrl . ' does not have CSRF token.');
     }
-    private function getRequestValues(?string $key = null)
+    private function getRequestValues(?string $key = null): mixed
     {
         $httpMethod = strtolower($this->httpMethod);
         return $this->$httpMethod($key);
     }
 
-    public function validate(array $rules, ?array $massages = null): bool
+    public function validate(array $rules, ?array $massages = null): ?bool
     {
-        $error = [];
-        foreach ($rules as $key => $ruleAndArg) {
-            $requestValue = $this->getRequestValues($key);
-            $validator = new Validator($requestValue, $ruleAndArg);
-            if (!is_null($validator->startValidate())) {
-                $error[$key] = $validator->startValidate();
-            }
-        }
-        $_SESSION['error'] = $error;
-        if (!empty($_SESSION['error']))
-        {
-            $_SESSION['old'] = $this->getRequestValues();
-            $this->redirect($_SERVER['HTTP_REFERER']);
-            // return false;
-            exit; 
-        }
-        if (empty($_SESSION['error']))
-        {
-            return true;
-        }
+        $validator = new Validator($rules, $this->getRequestValues());
+        return $validator->getValidateStatus();
     }
 }

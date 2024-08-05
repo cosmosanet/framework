@@ -21,7 +21,7 @@ final class Application extends Facade
 {
     protected static function getFacadeAccessor(): array
     {
-       return [ThrowableHandler::class, Env::class, Token::class];
+        return [ThrowableHandler::class, Env::class, Token::class];
     }
 
     public function bootstrap(): void

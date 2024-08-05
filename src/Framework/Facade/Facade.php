@@ -13,7 +13,7 @@ class Facade
     protected static function getInstance(string $method): object
     {
         $аccessor = static::getFacadeAccessor();
-        $className = static:: getClassForMethodOrFail($аccessor, $method);
+        $className = static::getClassForMethodOrFail($аccessor, $method);
         $instance = new $className();
         return $instance;
     }
@@ -23,17 +23,17 @@ class Facade
             foreach ($аccessor as $аccessorItem) {
                 if (static::checkClass($аccessorItem) && static::checkMethod($аccessorItem, $method)) {
                     return $аccessorItem;
-                } 
+                }
                 if (!static::checkClass($аccessorItem)) {
                     throw new Exception('The facade of the class does not exist.');
                 }
             }
             throw new Exception('Unidentified method:' . $method . '.');
-        } 
+        }
         if (is_string($аccessor)) {
             if (static::checkClass($аccessor) && static::checkMethod($аccessor, $method)) {
                 return $аccessor;
-            } 
+            }
             if (!static::checkClass($аccessor)) {
                 throw new Exception('The facade of the class does not exist.');
             }

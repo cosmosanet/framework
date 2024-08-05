@@ -31,7 +31,7 @@ class Routes
         }
         return $this;
     }
-    private function checkAuthorized()
+    private function checkAuthorized(): void
     {
         // if (key_exists('Authorization', getallheaders())) {
         //    $token = explode('basic', getallheaders()['Authorization'])[1];
@@ -106,7 +106,7 @@ class Routes
         $searchMethod = new \ReflectionMethod($class, $method);
         foreach ($searchMethod->getParameters() as $item) {
             $name = $item->getName();
-            if ((string)$item->getType() === 'Framework\Http\Request') {
+            if ((string) $item->getType() === 'Framework\Http\Request') {
                 $paramArray[$name] = $this->request;
             } else if (isset($urlParam)) {
                 if (array_key_exists($name, $urlParam)) {
@@ -177,7 +177,7 @@ class Routes
         $paramArray = $this->getParam($class, $method, $regex, $urlParam);
         $callMethod = new $class;
         // try {
-            $callMethod->$method(...$paramArray);
+        $callMethod->$method(...$paramArray);
         // } catch (Throwable $th) {
         //     throw new RouteException('Unfeathered parameter type');
         // }

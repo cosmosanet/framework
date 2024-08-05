@@ -3,7 +3,7 @@
 namespace Framework\Singleton;
 
 class Singletone
-{    
+{
     protected static $instance;
 
     protected function __construct()

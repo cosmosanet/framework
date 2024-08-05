@@ -5,7 +5,7 @@ use Throwable;
 
 class ThrowableHandler
 {
-    public function ThrowableHandler()
+    public function ThrowableHandler(): void
     {
         try {
             $this->loadBootstrap();
@@ -26,11 +26,12 @@ class ThrowableHandler
             }
         }
     }
-    private function getHttpStatusIfExist(Throwable $th): mixed
+    private function getHttpStatusIfExist(Throwable $th)
     {
         if (method_exists($th, 'getHttpStatus')) {
             return $th->getHttpStatus();
-        } else return false;
+        } else
+            return false;
     }
     private function getThrowableType(Throwable $th): string
     {

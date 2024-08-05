@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+
 use Framework\Traits\RedirectTrait;
 
 class Controller
@@ -16,9 +17,9 @@ class Controller
         unset($_SESSION['error']);
         unset($_SESSION['old']);
         return $this;
-    } 
+    }
     public function redirect(string $url): Controller
-    {   
+    {
         $this->standartRedirect($url);
         return $this;
     }

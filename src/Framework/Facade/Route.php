@@ -17,7 +17,7 @@ final class Route extends Facade
 {
     protected static function getFacadeAccessor()
     {
-       return Routes::class;
+        return Routes::class;
     }
     public static function isExit()
     {
