@@ -14,6 +14,7 @@ class Model extends DB
     protected string $action;
     protected string $sqlOperator;
     protected string $insertValues;
+
     public function table(string $name): Model
     {
         $this->table = ' ' . $name;
@@ -29,18 +30,21 @@ class Model extends DB
         }
         return $this;
     }
+
     public function orWhere(string $firstOperator, string $value, string $secondOperator): Model
     {
         $sql = 'OR ' . strval($firstOperator) . ' ' . $value . ' ' . strval($secondOperator) . ' ';
         $this->conditions = $this->conditions . $sql;
         return $this;
     }
+
     public function andWhere(string $firstOperator, string $value, string $secondOperator): Model
     {
         $sql = 'AND ' . strval($firstOperator) . ' ' . $value . ' ' . strval($secondOperator) . ' ';
         $this->conditions = $this->conditions . $sql;
         return $this;
     }
+
     public function join(string $table): Model
     {
         $sql = ' JOIN ' . $table;
@@ -51,12 +55,14 @@ class Model extends DB
         }
         return $this;
     }
+    
     public function on(string $firstOperator, string $value, string $secondOperator): Model
     {
         $sql = ' ON ' . $firstOperator . ' ' . $value . ' ' . $secondOperator;
         $this->joins .= $sql;
         return $this;
     }
+
     public function insert(array $arr, ?bool $toSql = null): ?string
     {
         foreach ($arr as $key => $value) {
@@ -80,6 +86,7 @@ class Model extends DB
         $conn->query($sql);
         mysqli_close($conn);
     }
+
     public function delete(?bool $toSql = null): ?string
     {
         $this->action = 'DELETE';
@@ -92,6 +99,7 @@ class Model extends DB
         $conn->query($sql);
         mysqli_close($conn);
     }
+
     public function get(?array $arr = null, ?bool $toSql = null): mixed
     {
         $this->action = 'SELECT';
@@ -121,6 +129,7 @@ class Model extends DB
         mysqli_close($conn);
         return $rows;
     }
+
     public function count(?array $arr = null, ?bool $toSql = null): mixed
     {
         $this->action = 'SELECT';
@@ -147,6 +156,7 @@ class Model extends DB
         return (int) mysqli_fetch_array($result)['COUNT(*)'];   
         
     }
+    
     protected function sqlBuild(): string
     {
         $sql = '';

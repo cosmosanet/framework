@@ -14,6 +14,7 @@ class DB
         $this->table = $name;
         return $this;
     }
+
     public function string(string $name, ?int $count = null): DB
     {
         $this->parametrs[$name] = 'varchar';
@@ -23,15 +24,18 @@ class DB
         $this->parametrs[$name] .= ' (' . 255 . ')';
         return $this;
     }
+
     public function int(string $name): DB
     {
         $this->parametrs[$name] .= ' (' . 255 . ')';
         return $this;
     }
+
     public function getPatametr(): array
     {
         return $this->parametrs;
     }
+
     public function create(): void
     {
         $sql = 'CREATE TABLE ' . $this->table . ' (';
@@ -45,6 +49,7 @@ class DB
         mysqli_close($conn);
         // echo $sql;
     }
+    
     public function toSql(): string
     {
         $sql = 'CREATE TABLE ' . $this->table . ' (';

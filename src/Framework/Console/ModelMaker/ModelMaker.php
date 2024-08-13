@@ -12,8 +12,8 @@ class ModelMaker extends Console
     protected string $content;
     private string $tableName = 'DefaultTable';
     protected array $operations = [
-        '-t' => 'setTableNmae',
-        '--tablename' => 'setTableNmae',
+        '-t' => 'setTableName',
+        '--tablename' => 'setTableName',
         '-f' => 'setFillable',
         '--fillable' => 'setFillable',
     ];
@@ -35,7 +35,7 @@ class " . $this->value . " extends Model
         $this->filename = $this->value . ".php";
     }
 
-    protected function setTableNmae(string $name): void
+    protected function setTableName(string $name): void
     {
         $this->tableName = $name;
     }

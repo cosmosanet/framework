@@ -26,6 +26,7 @@ class ThrowableHandler
             }
         }   
     }
+    
     private function getHttpStatusIfExist(Throwable $th)
     {
         if (method_exists($th, 'getHttpStatus')) {
@@ -33,14 +34,17 @@ class ThrowableHandler
         } else
             return false;
     }
+
     private function getThrowableType(Throwable $th): string
     {
         return str_replace('Exception\\', '', get_class($th));
     }
+
     private function loadBootstrap(): void
     {
         require_once $_SERVER['DOCUMENT_ROOT'] . '/bootstrap/bootstrap.php';
     }
+
     private function getThrowableMassages(Throwable $th, array $massages = []): array
     {
         $massages['exceptionMassage'] = $th->getMessage();
