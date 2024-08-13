@@ -10,6 +10,7 @@ class Facade
     {
         throw new Exception('Facade does not implement getFacadeAccessor method.');
     }
+    
     protected static function getInstance(string $method): object
     {
         $аccessor = static::getFacadeAccessor();
@@ -17,6 +18,7 @@ class Facade
         $instance = new $className();
         return $instance;
     }
+
     protected static function getClassForMethodOrFail(mixed $аccessor, string $method): string
     {
         if (is_array($аccessor)) {
@@ -39,16 +41,18 @@ class Facade
             }
             throw new Exception('Unidentified method:' . $method . '.');
         }
-
     }
+
     protected static function checkClass(string $class): bool
     {
         return class_exists($class) ? true : false;
     }
+
     protected static function checkMethod(string $class, string $method)
     {
         return method_exists($class, $method) ? true : false;
     }
+
     public static function __callStatic($method, $args)
     {
         $instance = static::getInstance($method);

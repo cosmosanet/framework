@@ -19,11 +19,13 @@ class UserController extends Controller
     {
         self::view('index');
     }
+
     public function dropSession(): void
     {
         session_destroy();
         self::redirect('/');
     }
+    
     public function auth(): void
     {
         self::redirect('/')->session(['Auth' => 1]);

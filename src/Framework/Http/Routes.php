@@ -115,7 +115,7 @@ class Routes
                     // {
                     //     var_dump((string)$item->getType(),(string)gettype($urlParam[$name]));
                     //     throw new RouteException('Unfeathered parameter ' . $urlParam[$name] . ' type');
-                    // }
+                    // }                    
                     $paramArray[$name] = $urlParam[$name];
                 }
             } else {

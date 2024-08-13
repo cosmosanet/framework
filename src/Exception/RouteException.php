@@ -8,6 +8,6 @@ class RouteException extends Exception
 {
     public function getHttpStatus(): int
     {
-        return 401;
+        return 404;
     }
 }

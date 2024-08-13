@@ -19,16 +19,19 @@ class Token
 
         return $token;
     }
+
     public static function setCSRF(): void
     {
         if (!isset($_SESSION['X-CSRF-Token'])) {
             $_SESSION['X-CSRF-Token'] = self::genToken();
         }
     }
+
     public static function dropCSRF(): void
     {
         unset($_SESSION['X-CSRF-Token']);
     }
+    
     public static function getCSRF(): string
     {
         return $_SESSION['X-CSRF-Token'];

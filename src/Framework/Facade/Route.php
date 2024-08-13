@@ -19,7 +19,8 @@ final class Route extends Facade
     {
         return Routes::class;
     }
-    public static function isExit()
+    
+    public static function isExit(): void
     {
         throw new RouteException('Route ' . $_SERVER['REQUEST_URI'] . ' not found');
     }

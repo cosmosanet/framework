@@ -24,7 +24,7 @@ class ThrowableHandler
                     http_response_code(500);
                 }
             }
-        }
+        }   
     }
     private function getHttpStatusIfExist(Throwable $th)
     {

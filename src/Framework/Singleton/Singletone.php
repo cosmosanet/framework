@@ -9,9 +9,11 @@ class Singletone
     protected function __construct()
     {
     }
+
     protected function __clone()
     {
     }
+    
     protected static function getInstance()
     {
         return static::$instance;

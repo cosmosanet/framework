@@ -14,6 +14,7 @@ class Validator
     private bool $validateStatus = true;
     private array $error = [];
     //@todo подумать как реализовать + сделать возможность наследования от request + Сдеать так чтобы метод отдавал false при провале валидации
+
     public function __construct(array $rules, mixed $requestValues)
     {
         foreach ($rules as $key => $ruleAndArg) {
@@ -34,6 +35,7 @@ class Validator
             exit;
         }
     }
+
     private function setValidateStatus(bool $error): void
     {
         if (!empty($error)) {
@@ -45,14 +47,17 @@ class Validator
             }
         }
     }
+
     private function checkValidateError(): bool
     {
         return (!empty($_SESSION['error'])) ? true : false;
     }
+
     public function getValidateStatus(): bool
     {
         return $this->validateStatus;
     }
+
     private function require()
     {
         if (empty($this->requestValue) && $this->requestValue != '0') {
@@ -60,6 +65,7 @@ class Validator
         }
         return true;
     }
+
     private function int()
     {
         if (is_numeric($this->requestValue)) {
@@ -70,6 +76,7 @@ class Validator
             return 'Is not int';
         }
     }
+
     private function text(): mixed
     {
         if (is_string($this->requestValue)) {
@@ -80,6 +87,7 @@ class Validator
             return 'Is not text';
         }
     }
+
     private function max(int $count): mixed
     {
         switch ($this->type) {
@@ -93,6 +101,7 @@ class Validator
                 return strlen($this->requestValue) <= $count ? true : 'Value is too high';
         }
     }
+
     private function min(int $count): mixed
     {
         switch ($this->type) {
@@ -106,10 +115,12 @@ class Validator
                 return strlen($this->requestValue) >= $count ? true : 'Value too small';
         }
     }
+
     private function regex(int $regex): bool
     {
         return preg_match($regex, $this->requestValue);
     }
+
     public function startValidate(): ?string
     {
         foreach (explode('|', $this->ruleAndArg) as $item) {

@@ -8,6 +8,6 @@ class CSRFException extends Exception
 {
     public function getHttpStatus(): int
     {
-        return 404;
+        return 401;
     }
 }
