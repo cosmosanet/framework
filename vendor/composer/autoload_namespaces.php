@@ -6,4 +6,11 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Stack' => array($vendorDir . '/stack/builder/src'),
+    'PhpCollection' => array($vendorDir . '/phpcollection/phpcollection/src'),
+    'Negotiation' => array($vendorDir . '/willdurand/negotiation/src'),
+    'Metadata\\' => array($vendorDir . '/jms/metadata/src'),
+    'JMS\\Serializer' => array($vendorDir . '/jms/serializer/src'),
+    'JMS\\' => array($vendorDir . '/jms/parser-lib/src'),
+    'Hateoas' => array($vendorDir . '/willdurand/hateoas/src'),
 );

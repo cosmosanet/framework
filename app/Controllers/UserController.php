@@ -20,6 +20,11 @@ class UserController extends Controller
         self::view('index');
     }
 
+    public function zxc(Request $request): void
+    {
+        var_dump('Авторизаиця по токену');
+    }
+
     public function dropSession(): void
     {
         session_destroy();

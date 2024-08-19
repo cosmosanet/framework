@@ -1,5 +1,6 @@
 <?php
 
+use App\Middleware\ApiToken;
 use Framework\Facade\Route;
 
 Route::get('/', App\Controllers\UserController::class)->name('index');
@@ -8,4 +9,6 @@ Route::get('/calculate', App\Controllers\UserController::class)->middleware(App\
 Route::get('/auth', App\Controllers\UserController::class)->name('auth');
 Route::get('/dropSession', App\Controllers\UserController::class)->name('dropSession');
 Route::post('/post/{id}/', App\Controllers\UserController::class)->name('post');
+
+Route::post('/zxc', App\Controllers\UserController::class)->name('zxc');
 Route::isExit();

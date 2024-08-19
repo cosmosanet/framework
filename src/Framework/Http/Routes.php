@@ -20,22 +20,23 @@ class Routes
         $this->request->setRegex($this->urlRegex);
         return $this;
     }
+
     public function post(string $requestUrl, string $controllerName): Routes
     {
         $this->request = new Request($controllerName, 'POST', $requestUrl);
         $this->urlRegex = $this->getRegexForUrl($requestUrl);
         $this->request->setUrlNamaesParams($this->getUrlNameParamIfExist($requestUrl));
         $this->request->setRegex($this->urlRegex);
-        if ($this->checkRequest()) {
-            $this->checkAuthorized();
+        if (!isset(getallheaders()['Authorization'])) {
+            if ($this->checkRequest()) {
+                $this->checkAuthorized();
+            }
         }
         return $this;
     }
+
     private function checkAuthorized(): void
     {
-        // if (key_exists('Authorization', getallheaders())) {
-        //    $token = explode('basic', getallheaders()['Authorization'])[1];
-        // } 
         // @todo Узнать как сделать хранилище ключей доступа 
         if ($this->request->getCSRF() === Application::getCSRF()) {
             Application::dropCSRF();
@@ -44,6 +45,7 @@ class Routes
             throw new CSRFException('Route unauthorized');
         }
     }
+
     public function name(string $nameMethod): void
     {
         if ($this->checkRequest()) {
@@ -52,6 +54,7 @@ class Routes
             exit;
         }
     }
+
     public function middleware(mixed $middlewares): Routes
     {
 
@@ -73,6 +76,7 @@ class Routes
         }
         return $this;
     }
+
     private function getUrlNameParamIfExist(string $url): ?array
     {
         if (preg_match('/\{([^}]*)\}/', $url)) {
@@ -83,6 +87,7 @@ class Routes
             return $array = [];
         }
     }
+
     private function getRegexForUrl(string $url): string
     {
         preg_match_all('/\{([^}]*)\}/', $url, $array);
@@ -100,6 +105,7 @@ class Routes
         $regex = str_replace('\/\/', '\/', $regex);
         return '/^' . $regex . '/';
     }
+
     private function getParam(string $class, string $method, string $regex, ?array $urlParam): array
     {
         $paramArray = [];
@@ -124,6 +130,7 @@ class Routes
         }
         return $paramArray;
     }
+
     private function getMainUrl(string $serverUrl): string
     {
         $url = parse_url($serverUrl)['path'];
@@ -131,6 +138,7 @@ class Routes
         $url = str_replace('//', '/', $url);
         return (string) $url;
     }
+
     private function getRequestIfExist(string $url): ?Request
     {
         if (preg_match($this->urlRegex, $url)) {
@@ -138,12 +146,14 @@ class Routes
         }
         return null;
     }
+
     private function getValueUrlParam($url, $regex): array
     {
         preg_match($regex, $url, $arr);
         array_shift($arr);
         return $arr;
     }
+
     private function checkHttpMethod(): bool
     {
         $reqest = $this->getRequestIfExist($this->getMainUrl($_SERVER['REQUEST_URI']));
@@ -157,6 +167,7 @@ class Routes
         }
         return false;
     }
+
     private function checkMetodExist(string $class, string $method): bool
     {
         if (class_exists($class)) {
@@ -172,6 +183,7 @@ class Routes
         }
         return false;
     }
+
     private function callMethod(string $class, string $method, string $regex, array $urlParam): void
     {
         $paramArray = $this->getParam($class, $method, $regex, $urlParam);
@@ -183,6 +195,7 @@ class Routes
         // }
         //@todo починить ислючение неверного параметра.
     }
+
     private function checkRequest(): bool
     {
         $url = $this->getMainUrl($_SERVER['REQUEST_URI']);
@@ -191,6 +204,7 @@ class Routes
         } else
             return false;
     }
+    
     private function start(): void
     {
         $mainurl = $this->getMainUrl($_SERVER['REQUEST_URI']);

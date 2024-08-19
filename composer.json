@@ -13,5 +13,9 @@
             "email": "g.a.patr@bk.ru"
         }
     ],
-    "require": {}
+    "require": {
+        "phprest/phprest": "*",
+        "predis/predis": "^2.2",
+        "firebase/php-jwt": "^6.10"
+    }
 }
